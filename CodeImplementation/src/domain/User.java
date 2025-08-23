@@ -1,7 +1,7 @@
 package domain;
 
-public class User implements UserInterface {
-    private String userID;
+public class User implements IUser {
+    private final String userID;
     private String password;
     private String name;
     private String email;
@@ -68,10 +68,17 @@ public class User implements UserInterface {
         if (this == obj) {
             return true;
         }
-        else if (obj == null || getClass() != obj.getClass()) {
+        
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
+        
         User user = (User) obj;
-        return (userID.equals(user.getUserID()) && password.equals(user.getPassword()));
+        return userID.equals(user.userID);
+    }
+
+    @Override
+    public int hashCode() {
+        return userID != null ? userID.hashCode() : 0;
     }
 }

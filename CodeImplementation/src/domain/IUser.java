@@ -1,6 +1,6 @@
 package domain;
 
-public interface UserInterface {
+public interface IUser {
     // Get Functions
     public String getUserID();
     public String getPassword();
