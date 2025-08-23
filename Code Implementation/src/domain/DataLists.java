@@ -9,9 +9,9 @@ import java.util.Scanner;
 
 public class DataLists implements IDataStore {
     public List<Course> courseList;
-    public List<IUser> administratorList = getUserList("administrator");
-    public List<IUser> studentList = getUserList("student");
-    public List<IUser> lecturerList = getUserList("lecturer");
+    public List<IUser> administratorList = userRead("administrator");
+    public List<IUser> studentList = userRead("student");
+    public List<IUser> lecturerList = userRead("lecturer");
 
     // Read students from file
     public List<IUser> userRead(String userRole) {
@@ -155,13 +155,8 @@ public class DataLists implements IDataStore {
     }
 
     @Override
-    public void addActivity(EvaluationActivity newActivity, String courseID) {
-        for (Course course : courseList) {
-            if (course.getCourseID().equals(courseID)) {
-                course.addActivity(newActivity);
-                break;
-            }
-        }
+    public void addActivity(EvaluationActivity newActivity, Course course) {
+        course.addActivity(newActivity);
     }
 
     @Override

@@ -9,6 +9,5 @@ public class SystemUI {
         System.out.println("Name: " + user.getName());
         System.out.println("Email: " + user.getEmail());
         System.out.println("Phone No: " + user.getPhoneNo());
-      
     }
 }
