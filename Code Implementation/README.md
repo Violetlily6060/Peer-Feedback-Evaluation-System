@@ -1,6 +1,28 @@
 ## Getting Started
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Welcome to the code implementation of the Peer Feedback Evaluation System
+
+This system includes the partipation of three types the users:
+> Students
+> Lecturers
+> System Administrators
+
+where the users are able to:
+> Students
+    - Create feedback to other peers
+    - Update submitted feedback
+
+> Lecturers
+    - Create an Evaluation Activity
+    - Add students as participants to the Evaluation Activity
+    - Generate an activity report
+    - View all submitted feedbacks in the Evaluation Activity they created
+
+> Administrators
+    - Create, View, Update, Delete all accounts
+    - View all Evaluation Activities
+    - Generate an activity report
+    - View all submitted feedbacks
 
 ## Folder Structure
 
@@ -11,8 +33,4 @@ The workspace contains two folders by default, where:
 
 Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+> To run the system, go to src/app/ConsoleUI and click "Run"
