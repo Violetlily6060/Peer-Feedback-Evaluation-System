@@ -3,22 +3,22 @@
 Welcome to the code implementation of the Peer Feedback Evaluation System
 
 This system includes the partipation of three types the users:
-> Students
-> Lecturers
-> System Administrators
+- Students
+- Lecturers
+- System Administrators
 
 where the users are able to:
-> Students
+- Students
     - Create feedback to other peers
     - Update submitted feedback
 
-> Lecturers
+- Lecturers
     - Create an Evaluation Activity
     - Add students as participants to the Evaluation Activity
     - Generate an activity report
     - View all submitted feedbacks in the Evaluation Activity they created
 
-> Administrators
+- Administrators
     - Create, View, Update, Delete all accounts
     - View all Evaluation Activities
     - Generate an activity report
