@@ -4,16 +4,12 @@ public class User implements IUser {
     private final String userID;
     private String password;
     private String name;
-    private String email;
-    private String phoneNo;
 
     // Constructor
-    public User(String userID, String password, String name, String email, String phoneNo) {
+    public User(String userID, String password, String name) {
         this.userID = userID;
         this.password = password;
         this.name = name;
-        this.email = email;
-        this.phoneNo = phoneNo;
     }
 
     // Get Functions
@@ -32,16 +28,6 @@ public class User implements IUser {
         return name;
     }
 
-    @Override
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public String getPhoneNo() {
-        return phoneNo;
-    }
-
     // Set Functions
     @Override
     public void setPassword(String newPassword) {
@@ -53,16 +39,7 @@ public class User implements IUser {
         this.name = newName;
     }
 
-    @Override
-    public void setEmail(String newEmail) {
-        this.email = newEmail;
-    }
-
-    @Override
-    public void setPhoneNo(String newPhoneNo) {
-        this.phoneNo = newPhoneNo;
-    }
-
+    // Base Functions
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -80,5 +57,10 @@ public class User implements IUser {
     @Override
     public int hashCode() {
         return userID != null ? userID.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return userID + ";" + password + ";" + name;
     }
 }

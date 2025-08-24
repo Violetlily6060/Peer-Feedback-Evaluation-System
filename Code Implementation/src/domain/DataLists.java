@@ -1,6 +1,9 @@
 package domain;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -8,54 +11,183 @@ import java.util.List;
 import java.util.Scanner;
 
 public class DataLists implements IDataStore {
-    public List<Course> courseList;
     public List<IUser> administratorList = userRead("administrator");
     public List<IUser> studentList = userRead("student");
     public List<IUser> lecturerList = userRead("lecturer");
+    public List<EvaluationActivity> activityList;
 
-    // Read students from file
+    // Read Students from File
     public List<IUser> userRead(String userRole) {
         List<IUser> userList = new ArrayList<>();
-        Path absPath = Paths.get("").toAbsolutePath();
+        // Database Path
+        String absPath = Paths.get("").toAbsolutePath().normalize().toString();
+        String directory = Paths.get(absPath, "\\Database").normalize().toString();
 
         switch(userRole) {
             case "student" -> {
-                Path studentPath = Paths.get(absPath.normalize().toString(), "\\Database", "\\student.txt");
-                try (Scanner studentScanner = new Scanner(studentPath)) {
-                    while(studentScanner.hasNext()) {
-                        String[] studentDetails = studentScanner.nextLine().split(";");
-                        userList.add(new Student(studentDetails[0], studentDetails[1], studentDetails[2], studentDetails[3], studentDetails[4]));
+                // Get From Database
+                Path studentPath = Paths.get(directory, "\\student.txt");
+
+                try {
+                    // Read if File Exist
+                    if (Files.exists(studentPath)) {
+                        Scanner studentScanner = new Scanner(studentPath);
+                        while(studentScanner.hasNext()) {
+                            String[] studentDetails = studentScanner.nextLine().split(";");
+                            userList.add(new Student(studentDetails[0], studentDetails[1], studentDetails[2]));
+                        }
+                        studentScanner.close();
+                    }
+
+                    // Create New File if File Does Not Exist
+                    else {
+                        new File(directory).mkdirs();
+                        new File(studentPath.normalize().toString()).createNewFile();
                     }
                 }
                 catch (IOException e) {
-
+                    System.out.println("Error Creating File: " + e.getMessage());
                 }
             }
             case "lecturer" -> {
-                Path lecturerPath = Paths.get(absPath.normalize().toString(), "\\Database", "\\lecturer.txt");
-                try (Scanner lecturerScanner = new Scanner(lecturerPath)) {
-                    while(lecturerScanner.hasNext()) {
-                        String[] lecturerDetails = lecturerScanner.nextLine().split(";");
-                        userList.add(new Lecturer(lecturerDetails[0], lecturerDetails[1], lecturerDetails[2], lecturerDetails[3], lecturerDetails[4]));
+                // Get From Database
+                Path lecturerPath = Paths.get(directory, "\\lecturer.txt");
+
+                try {
+                    //Read if File Exist
+                    if (Files.exists(lecturerPath)) {
+                        Scanner lecturerScanner = new Scanner(lecturerPath);
+                        while(lecturerScanner.hasNext()) {
+                            String[] lecturerDetails = lecturerScanner.nextLine().split(";");
+                            userList.add(new Lecturer(lecturerDetails[0], lecturerDetails[1], lecturerDetails[2]));
+                        }
+                        lecturerScanner.close();
+                    }
+
+                    // Create New File if File Does Not Exist
+                    else {
+                        new File(directory).mkdirs();
+                        new File(lecturerPath.normalize().toString()).createNewFile();
                     }
                 }
                 catch (IOException e) {
-
+                    System.out.println("Error Creating File: " + e.getMessage());
                 }
             }
             case "administrator" -> {
-                Path administratorPath = Paths.get(absPath.normalize().toString(), "\\Database", "\\administrator.txt");
-                try (Scanner administratorScanner = new Scanner(administratorPath)) {
-                    while(administratorScanner.hasNext()) {
-                        String[] administratorDetails = administratorScanner.nextLine().split(";");
-                        userList.add(new Administrator(administratorDetails[0], administratorDetails[1], administratorDetails[2], administratorDetails[3], administratorDetails[4]));
+                Path administratorPath = Paths.get(directory, "\\administrator.txt");
+
+                try {
+                    // Get From Database
+                    if (Files.exists(administratorPath)) {
+                        Scanner administratorScanner = new Scanner(administratorPath);
+                        while(administratorScanner.hasNext()) {
+                            String[] adminDetails = administratorScanner.nextLine().split(";");
+                            userList.add(new Administrator(adminDetails[0], adminDetails[1], adminDetails[2]));
+                        }
+                        administratorScanner.close();
+                    }
+
+                    // Create New File if File Does Not Exist
+                    else {
+                        new File(directory).mkdirs();
+                        new File(administratorPath.normalize().toString()).createNewFile();
                     }
                 } catch (IOException e) {
-
+                    System.out.println("Error Creating File: " + e.getMessage());
                 }
             }
         }
         return userList;
+    }
+
+    // Write Students to File
+    public void userWrite(List<IUser> userList, String userRole) {
+        // Database Path
+        String absPath = Paths.get("").toAbsolutePath().normalize().toString();
+        String directory = Paths.get(absPath, "\\Database").normalize().toString();
+
+        switch (userRole) {
+            case "student" -> {
+                // Get From Database
+                Path studentPath = Paths.get(directory, "\\student.txt");
+
+                try {
+                    // Read if File Exists
+                    if (Files.exists(studentPath)) {
+                        FileWriter studentWriter = new FileWriter(studentPath.normalize().toString());
+                        for (IUser user : userList) {
+                            studentWriter.write(user.toString());
+                        }
+                        studentWriter.close();
+                    }
+
+                    // Create New File if File Does Not Exist
+                    else {
+                        new File(directory).mkdirs();
+                        new File(studentPath.normalize().toString()).createNewFile();
+                    }
+                } 
+                catch (IOException e) {
+                    System.out.println("Error Creating File: " + e.getMessage());
+                }
+            }
+            case "lecturer" -> {
+                // Get From Database
+                Path lecturerPath = Paths.get(directory, "\\lecturer.txt");
+
+                try {
+                    // Read if File Exists
+                    if (Files.exists(lecturerPath)) {
+                        FileWriter lecturerWriter = new FileWriter(lecturerPath.normalize().toString());
+                        for (IUser user : userList) {
+                            lecturerWriter.write(user.toString());
+                        }
+                        lecturerWriter.close();
+                    }
+
+                    // Create New File if File Does Not Exist
+                    else {
+                        new File(directory).mkdirs();
+                        new File(lecturerPath.normalize().toString()).createNewFile();
+                    }
+                } 
+                catch (IOException e) {
+                    System.out.println("Error Creating File: " + e.getMessage());
+                }
+            }
+            case "administrator" -> {
+                // Get From Database
+                Path administratorPath = Paths.get(directory, "\\administrator.txt");
+
+                try {
+                    // Read if File Exists
+                    if (Files.exists(administratorPath)) {
+                        FileWriter administratorWriter = new FileWriter(administratorPath.normalize().toString());
+                        for (IUser user : userList) {
+                            administratorWriter.write(user.toString());
+                        }
+                        administratorWriter.close();
+                    }
+
+                    // Create New File if File Does Not Exist
+                    else {
+                        new File(directory).mkdirs();
+                        new File(administratorPath.normalize().toString()).createNewFile();
+                    }
+                } 
+                catch (IOException e) {
+                    System.out.println("Error Creating File: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public List<EvaluationActivity> activityRead() {
+        List<EvaluationActivity> activities = new ArrayList<>();
+        
+
+        return activities;
     }
 
     // Validate User Login
@@ -145,18 +277,13 @@ public class DataLists implements IDataStore {
     }
 
     @Override
-    public List<Course> getCourseList() {
-        return courseList;
+    public List<EvaluationActivity> getActivityList() {
+        return activityList;
     }
 
     @Override
-    public List<EvaluationActivity> getActivityList(Course course) {
-        return course.getActivityList();
-    }
-
-    @Override
-    public void addActivity(EvaluationActivity newActivity, Course course) {
-        course.addActivity(newActivity);
+    public void addActivity(EvaluationActivity newActivity) {
+        activityList.add(newActivity);
     }
 
     @Override

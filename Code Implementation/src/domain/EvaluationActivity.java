@@ -8,7 +8,6 @@ public final class EvaluationActivity {
     private final String name;
     private final String trimester;
     private final IUser creator;
-    private final String dueDate;
     private List<IUser> participantList;
     private List<Feedback> feedbackList;
 
@@ -17,7 +16,6 @@ public final class EvaluationActivity {
         this.name = name;
         this.trimester = trimester;
         this.creator = creator;
-        this.dueDate = dueDate;
         this.participantList = getParticipant();
         this.feedbackList = getFeedBack();
     }
@@ -48,10 +46,6 @@ public final class EvaluationActivity {
 
     public IUser getCreator() {
         return creator;
-    }
-
-    public String dueDate() {
-        return dueDate;
     }
 
     public List<IUser> getParticipantList() {

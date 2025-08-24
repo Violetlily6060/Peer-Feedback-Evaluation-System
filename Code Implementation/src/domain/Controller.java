@@ -25,16 +25,12 @@ public class Controller {
         dataLists.deleteUser(user);
     }
 
-    public List<Course> getCourseList() {
-        return dataLists.getCourseList();
+    public List<EvaluationActivity> getActivityList() {
+        return dataLists.getActivityList();
     }
 
-    public List<EvaluationActivity> getActivityList(Course course) {
-        return dataLists.getActivityList(course);
-    }
-
-    public void addActivity(EvaluationActivity newActivity, Course course) {
-        dataLists.addActivity(newActivity, course);
+    public void addActivity(EvaluationActivity newActivity) {
+        dataLists.addActivity(newActivity);
     }
 
     public List<Feedback> getFeedbackList(EvaluationActivity activity) {
