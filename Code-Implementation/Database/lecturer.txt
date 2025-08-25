@@ -1,1 +1,2 @@
-l1;teacher;isshin
+l1;lecturer1;lecturer1
+l2;lecturer2;lecturer2
