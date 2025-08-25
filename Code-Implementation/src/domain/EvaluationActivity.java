@@ -157,8 +157,9 @@ public final class EvaluationActivity {
         if (Files.exists(feedbackPath)) {
             try (BufferedReader feedbackReader = Files.newBufferedReader(feedbackPath)) {
 
-                String[] feedbackDetails;
-                while((feedbackDetails = feedbackReader.readLine().split(";")) != null) {
+                String feedbackLine;
+                while((feedbackLine = feedbackReader.readLine()) != null) {
+                    String[] feedbackDetails = feedbackLine.split(";");
 
                     // Get Full Creator and Receiver Details
                     IUser fCreator = null;

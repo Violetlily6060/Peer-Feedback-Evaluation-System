@@ -266,8 +266,10 @@ public class DataLists implements IDataStore {
             try (BufferedReader userReader = Files.newBufferedReader(userPath)) {
                 
                 // Insert Details into List
-                String[] userDetails;
-                while((userDetails = userReader.readLine().split(";")) != null) {
+                String userLine;
+                while((userLine = userReader.readLine()) != null) {
+                    String[] userDetails = userLine.split(";");
+
                     switch (userRole) {
                         case "student" -> {
                             userList.add(new Student(userDetails[0], userDetails[1], userDetails[2]));
@@ -344,8 +346,9 @@ public class DataLists implements IDataStore {
             try (BufferedReader activityReader = Files.newBufferedReader(activityPath)) {
 
                 // Insert Details into List
-                String[] activityDetails;
-                while((activityDetails = activityReader.readLine().split(";")) != null) {
+                String activityLine;
+                while((activityLine = activityReader.readLine()) != null) {
+                    String[] activityDetails = activityLine.split(";");
 
                     // Get Full Lecturer Details
                     for (IUser lecturer : lecturerList) {
