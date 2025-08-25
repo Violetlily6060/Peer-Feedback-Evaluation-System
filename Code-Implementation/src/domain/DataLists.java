@@ -3,12 +3,11 @@ package domain;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +18,20 @@ public class DataLists implements IDataStore {
     public List<EvaluationActivity> activityList = activityRead();
 
     // Get Functions
+    // Get Working Database Directory
+    private Path getDirectory() {
+        // Initialize File Paths
+        Path absPath = Paths.get("").toAbsolutePath();
+        Path directory;
+        if (absPath.getFileName().toString().equals("Code-Implementation")) {
+            directory = absPath.resolve(Paths.get("Database"));
+        }
+        else {
+            directory = absPath.resolve(Paths.get("Code-Implementation", "Database"));
+        }
+        return directory;
+    }
+
     // Get List of Users by Role
     @Override
     public List<IUser> getUserList(String userRole) {
@@ -245,14 +258,12 @@ public class DataLists implements IDataStore {
     private List<IUser> userRead(String userRole) {
         List<IUser> userList = new ArrayList<>();
         // File Path
-        Path absPath = Paths.get("").toAbsolutePath();
-        Path directory = absPath.resolve(Paths.get("Database"));
+        Path directory = getDirectory();
         Path userPath = directory.resolve(Paths.get(userRole + ".txt"));
 
         // Read if File Exist
         if (Files.exists(userPath)) {
-            try (BufferedReader userReader = new BufferedReader(new FileReader(userPath.normalize().toString()))) {
-
+            try (BufferedReader userReader = Files.newBufferedReader(userPath)) {
                 
                 // Insert Details into List
                 String[] userDetails;
@@ -299,35 +310,25 @@ public class DataLists implements IDataStore {
         }
 
         // File Path
-        Path absPath = Paths.get("").toAbsolutePath();
-        Path directory = absPath.resolve(Paths.get("Database"));
+        Path directory = getDirectory();
         Path userPath = directory.resolve(Paths.get(userRole + ".txt"));
 
-        // Write if File Exists
-        if (Files.exists(userPath)) {
-            try (BufferedWriter userWriter = new BufferedWriter(new FileWriter(userPath.normalize().toString()))) {
-
-                // Write User into File
-                for (IUser user : userList) {
-                    userWriter.write(user.toString());
-                    userWriter.newLine();
-                }
-                userWriter.close();
-            }
-            catch (IOException e) {
-                System.out.println("Error Writing to File: " + e.getMessage());
-            }
+        // Create Directory if it does not Exists
+        if (!Files.exists(directory)) {
+            new File(directory.normalize().toString()).mkdirs();
         }
-            
-        // Create Directory & File if File Does Not Exist
-        else {
-            try {
-                new File(directory.normalize().toString()).mkdirs();
-                new File(userPath.normalize().toString()).createNewFile();
+
+        // Write Data
+        try (BufferedWriter userWriter = Files.newBufferedWriter(userPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            // Write User into File
+            for (IUser user : userList) {
+                userWriter.write(user.toString());
+                userWriter.newLine();
             }
-            catch (IOException e) {
-                System.out.println("Error Creating New File: " + e.getMessage());
-            }
+            userWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error Writing to File: " + e.getMessage());
         }
     }
 
@@ -335,13 +336,12 @@ public class DataLists implements IDataStore {
     private List<EvaluationActivity> activityRead() {
         List<EvaluationActivity> activities = new ArrayList<>();
         // File Path
-        Path absPath = Paths.get("").toAbsolutePath();
-        Path directory = absPath.resolve(Paths.get("Database"));
+        Path directory = getDirectory();
         Path activityPath = directory.resolve(Paths.get("activity.txt"));
 
         // Read if File Exist
         if (Files.exists(activityPath)) {
-            try (BufferedReader activityReader = new BufferedReader(new FileReader(activityPath.normalize().toString()))) {
+            try (BufferedReader activityReader = Files.newBufferedReader(activityPath)) {
 
                 // Insert Details into List
                 String[] activityDetails;
@@ -376,34 +376,24 @@ public class DataLists implements IDataStore {
     // Write Evaluation Activity to File
     private void activityWrite() {
         // File Path
-        Path absPath = Paths.get("").toAbsolutePath();
-        Path directory = absPath.resolve(Paths.get("Database"));
+        Path directory = getDirectory();
         Path activityPath = directory.resolve(Paths.get("activity.txt"));
 
-        // Write if File Exists
-        if (Files.exists(activityPath)) {
-            try (BufferedWriter activityWriter = new BufferedWriter(new FileWriter(activityPath.normalize().toString()))) {
+        // Create Directory if it does not Exists
+        if(!Files.exists(directory)) {
+            new File(directory.normalize().toString()).mkdirs();
+        }
 
-                // Write User into File
-                for (EvaluationActivity activity : activityList) {
-                    activityWriter.write(activity.toString());
-                    activityWriter.newLine();
-                }
-            }
-            catch (IOException e) {
-                System.out.println("Error Writing to File: " + e.getMessage());
+        // Write Data
+        try (BufferedWriter activityWriter = Files.newBufferedWriter(activityPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            // Write User into File
+            for (EvaluationActivity activity : activityList) {
+                activityWriter.write(activity.toString());
+                activityWriter.newLine();
             }
         }
-            
-        // Create Directory & File if File Does Not Exist
-        else {
-            try {
-                new File(directory.normalize().toString()).mkdirs();
-                new File(activityPath.normalize().toString()).createNewFile();
-            }
-            catch (IOException e) {
-                System.out.println("Error Creating New File: " + e.getMessage());
-            }
+        catch (IOException e) {
+            System.out.println("Error Writing to File: " + e.getMessage());
         }
     }
 }

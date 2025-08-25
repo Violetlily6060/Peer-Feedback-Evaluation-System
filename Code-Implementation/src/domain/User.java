@@ -28,6 +28,11 @@ public class User implements IUser {
         return name;
     }
 
+    @Override
+    public String getRole() {
+        return null;
+    }
+
     // Set Functions
     @Override
     public void setPassword(String newPassword) {
