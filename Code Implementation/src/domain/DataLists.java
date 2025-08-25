@@ -45,74 +45,97 @@ public class DataLists implements IDataStore {
     
     // Get Feedback List
     @Override
-    public List<Feedback> getFeedbackList(EvaluationActivity activity) {
-        return activity.getFeedbackList();
+    public List<Feedback> getFeedbackList(String activityID) {
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getActivityID().equals(activityID)) {
+                return activity.getFeedbackList();
+            }
+        }
+        return null;
     }
 
     // User Functions
     // Add new User to List
     @Override
-    public void addUser(IUser newUser) {
-        if (newUser instanceof Student) {
-            studentList.add(newUser);
-            userWrite("student");
-        }
-        else if (newUser instanceof Lecturer) {
-            lecturerList.add(newUser);
-            userWrite("lecturer");
-        }
-        else if (newUser instanceof Administrator) {
-            administratorList.add(newUser);
-            userWrite("administrator");
+    public void addUser(String userRole, String userID, String newPassword, String newName) {
+        switch(userRole) {
+            case "student" -> {
+                studentList.add(new Student(userID, newPassword, newName));
+            }
+            case "lecturer" -> {
+                lecturerList.add(new Lecturer(userID, newPassword, newName));
+            }
+            case "administrator" -> {
+                administratorList.add(new Administrator(userID, newPassword, newName));
+            }
+            default -> {
+                userWrite(userRole);
+            }
         }
     }
 
     // Update User Details in List
     @Override
-    public void updateUser(IUser newUser) {
-        if (newUser instanceof Student) {
-            for (int i = 0; i < studentList.size(); i++) {
-                if (studentList.get(i).getUserID().equals(newUser.getUserID())) {
-                    studentList.set(i, newUser);
-                    userWrite("student");
-                    break;
+    public void updateUser(String userRole, String userID, String newPassword, String newName) {
+        switch(userRole) {
+            case "student" -> {
+                for (int i = 0; i < studentList.size(); i++) {
+                    if (studentList.get(i).getUserID().equals(userID)) {
+                        studentList.set(i, new Student(userID, newPassword, newName));
+                        break;
+                    }
                 }
             }
-        }
-        else if (newUser instanceof Lecturer) {
-            for (int i = 0; i < lecturerList.size(); i++) {
-                if (lecturerList.get(i).getUserID().equals(newUser.getUserID())) {
-                    lecturerList.set(i, newUser);
-                    userWrite("lecturer");
-                    break;
+            case "lecturer" -> {
+                for (int i = 0; i < lecturerList.size(); i++) {
+                    if (lecturerList.get(i).getUserID().equals(userID)) {
+                        lecturerList.set(i, new Lecturer(userID, newPassword, newName));
+                        break;
+                    }
                 }
             }
-        }
-        else if (newUser instanceof Administrator) {
-            for (int i = 0; i < administratorList.size(); i++) {
-                if (administratorList.get(i).getUserID().equals(newUser.getUserID())) {
-                    administratorList.set(i, newUser);
-                    userWrite("administrator");
-                    break;
-                }
+            case "administrator" -> {
+                for (int i = 0; i < administratorList.size(); i++) {
+                    if (administratorList.get(i).getUserID().equals(userID)) {
+                        administratorList.set(i, new Administrator(userID, newPassword, newName));
+                        break;
+                    }
+                }       
+            }
+            default -> {
+                userWrite(userRole);
             }
         }
     }
 
     // Delete User from List
     @Override
-    public void deleteUser(IUser user) {
-        if (user instanceof Student) {
-            studentList.remove(user);
-            userWrite("student");
-        }
-        else if (user instanceof Lecturer) {
-            lecturerList.remove(user);
-            userWrite("lecturer");
-        }
-        else if (user instanceof Administrator) {
-            administratorList.remove(user);
-            userWrite("administrator");
+    public void deleteUser(String userRole, String userID) {
+        switch(userRole) {
+            case "student" -> {
+                for (int i = 0; i < studentList.size(); i++) {
+                    if (studentList.get(i).getUserID().equals(userID)) {
+                        studentList.remove(i);
+                        break;
+                    }
+                }
+            }
+            case "lecturer" -> {
+                for (int i = 0; i < lecturerList.size(); i++) {
+                    if (lecturerList.get(i).getUserID().equals(userID)) {
+                        lecturerList.remove(i);
+                        break;
+                    }
+                }
+            }
+            case "administrator" -> {
+                for (int i = 0; i < administratorList.size(); i++) {
+                    if (administratorList.get(i).getUserID().equals(userID)) {
+                        administratorList.remove(i);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -131,22 +154,90 @@ public class DataLists implements IDataStore {
     // Evaluation Activity Functions
     // Add new Evaluation Activity to List
     @Override
-    public void addActivity(EvaluationActivity newActivity) {
-        activityList.add(newActivity);
+    public void addActivity(String activityID, String name, String creatorID) {
+        for (IUser creator : lecturerList) {
+            if (creator.getUserID().equals(creatorID)) {
+                activityList.add(new EvaluationActivity(activityID, name, creator, studentList));
+                break;
+            }
+        }
         activityWrite();
+    }
+
+    // Participant Functions
+    // Add new Participant to List
+    @Override public void addParticipant(String activityID, String participantID) {
+
+        // Search Evaluation Activity
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getActivityID().equals(activityID)) {
+
+                // Search Participant Detail
+                for (IUser participant : studentList) {
+                    if (participant.getUserID().equals(participantID)) {
+                        activity.addParticipant(participant);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
     }
 
     // Feedback Functions
     // Add new Feedback to List
     @Override
-    public void addFeedback(EvaluationActivity activity, Feedback newFeedback) {
-        activity.addFeedback(newFeedback);
+    public void addFeedback(String activityID, String feedbackID, String creatorID, String receiverID, String dateCreated, String dateUpdated, String content) {
+        
+        // Search Evaluation Activity
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getActivityID().equals(activityID)) {
+
+                // Search Creator & Receiver
+                IUser fCreator = null;
+                IUser fReceiver = null;
+                for (IUser student : studentList) {
+                    if (student.getUserID().equals(creatorID)) {
+                        fCreator = student;
+                    }
+                    else if (student.getUserID().equals(receiverID)) {
+                        fReceiver = student;
+                    }
+                    if (fCreator != null && fReceiver != null) {
+                        activity.addFeedback(new Feedback(feedbackID, fCreator, fReceiver, dateCreated, dateUpdated, content));
+                        break;
+                    }
+                }
+                break;
+            }
+        } 
     }
 
     // Update Feedback in List
     @Override
-    public void updateFeedback(EvaluationActivity activity, Feedback newFeedback) {
-        activity.updateFeedback(newFeedback);
+    public void updateFeedback(String activityID, String feedbackID, String creatorID, String receiverID, String dateCreated, String dateUpdated, String content) {
+        // Search Evaluation Activity
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getActivityID().equals(activityID)) {
+
+                // Search Creator & Receiver
+                IUser fCreator = null;
+                IUser fReceiver = null;
+                for (IUser student : studentList) {
+                    if (student.getUserID().equals(creatorID)) {
+                        fCreator = student;
+                    }
+                    else if (student.getUserID().equals(receiverID)) {
+                        fReceiver = student;
+                    }
+                    if (fCreator != null && fReceiver != null) {
+                        activity.updateFeedback(new Feedback(feedbackID, fCreator, fReceiver, dateCreated, dateUpdated, content));
+                        break;
+                    }
+                }
+                break;
+            }
+        }
     }
 
     // Read Functions
