@@ -331,9 +331,5 @@ public class ConsoleUI {
 
     private static void hardline() {
         System.out.println("==================================================");
-=======
-    public static void main(String[] args) throws Exception {
-        Controller controller = new Controller();
-        controller.addUser("student", "yes", "yes", "yes");
     }
 }
