@@ -12,9 +12,7 @@ public class ConsoleUI {
 
     public static void main(String[] args) {
         while (true) {
-            while (!logged) {
-                login();
-            }
+            login();
 
             if (currentUser instanceof Student) {
                 studentMenu();
@@ -29,27 +27,30 @@ public class ConsoleUI {
     private static void login() {
         boolean invalid = false;
 
-        clearScreen();
-        hardline();
-        System.out.println("Peer Feedback Evaluation System Login Menu");
-        hardline();
-        System.out.println("Please enter your credentials to login");
-        softline();
-        if (invalid) {
-            System.out.println("INCORRECT USERNAME OR PASSWORD, PLEASE TRY AGAIN");
-        } else {
-            System.out.println();
-        }
-        System.out.print("User ID: ");
-        String userID = input.nextLine();
-        System.out.print("Password: ");
-        String password = input.nextLine();
+        while (!logged) {
+            clearScreen();
+            hardline();
+            System.out.println("Peer Feedback Evaluain Menu");
+            hardline();
+            System.out.println("Please enter your credentials to login");
+            softline();
+            if (invalid) {
+                System.out.println("INCORRECT USERNAME OR PASSWORD, PLEASE TRY AGAIN");
+            } else {
+                System.out.println();
+            }
+            System.out.print("User ID: ");
+            String userID = input.nextLine();
+            System.out.print("Password: ");
+            String password = input.nextLine();
 
-        currentUser = controller.validateLogin(userID, password);
-        if (currentUser == null) {
-            invalid = true;
-        } else {
-            logged = true;
+            currentUser = controller.validateLogin(userID, password);
+            if (currentUser == null) {
+                invalid = true;
+            } else {
+                invalid = false;
+                logged = true;
+            }
         }
     }
 
