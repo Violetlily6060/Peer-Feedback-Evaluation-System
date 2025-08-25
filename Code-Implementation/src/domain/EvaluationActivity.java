@@ -48,7 +48,7 @@ public final class EvaluationActivity {
     }
 
     // Get Working Database Directory
-    public Path getDirectory() {
+    private Path getDirectory() {
         // Initialize File Paths
         Path absPath = Paths.get("").toAbsolutePath();
         Path directory;
@@ -72,13 +72,15 @@ public final class EvaluationActivity {
         feedbackWrite();
     }
 
-    public void updateFeedback(Feedback newFeedback) {
-        for (int i = 0; i < feedbackList.size(); i++) {
-            if (feedbackList.get(i).getFeedbackID().equals(newFeedback.getFeedbackID())) {
-                feedbackList.set(i, newFeedback);
+    public void updateFeedback(String feedbackID, String dateUpdated, String content) {
+        for (Feedback feedback : feedbackList) {
+            if (feedback.getFeedbackID().equals(feedbackID)) {
+                feedback.setDateUpdated(dateUpdated);
+                feedback.setContent(content);
                 break;
             }
         }
+        feedbackWrite();
     }
 
     // Read Participant From File
