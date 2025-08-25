@@ -1,6 +1,9 @@
 package domain;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public final class EvaluationActivity {
     private final String activityID;
@@ -76,11 +78,11 @@ public final class EvaluationActivity {
 
         // Read if File Exist
         if (Files.exists(participantPath)) {
-            try (Scanner participantScanner = new Scanner(participantPath)) {
-                while(participantScanner.hasNextLine()) {
+            try (BufferedReader participantReader = new BufferedReader(new FileReader(participantPath.normalize().toString()))) {
 
-                    // Get Full Participant Details
-                    String participantID = participantScanner.nextLine();
+                // Get Full Participant Details
+                String participantID;
+                while((participantID = participantReader.readLine()) != null) {
                     for (IUser student : studentList) {
                         if (student.getUserID().equals(participantID)) {
                             participants.add(student);
@@ -116,11 +118,12 @@ public final class EvaluationActivity {
 
         // Write if File Exists
         if (Files.exists(participantPath)) {
-            try (FileWriter participantWriter = new FileWriter(participantPath.normalize().toString())) {
+            try (BufferedWriter participantWriter = new BufferedWriter(new FileWriter(participantPath.normalize().toString()))) {
 
                 // Write User into File
                 for (IUser participant : participantList) {
                     participantWriter.write(participant.getUserID());
+                    participantWriter.newLine();
                 }
             }
             catch (IOException e) {
@@ -150,11 +153,10 @@ public final class EvaluationActivity {
 
         // Read if File Exist
         if (Files.exists(feedbackPath)) {
-            try (Scanner feedbackScanner = new Scanner(feedbackPath)) {
-                while(feedbackScanner.hasNext()) {
+            try (BufferedReader feedbackReader = new BufferedReader(new FileReader(feedbackPath.normalize().toString()))) {
 
-                    // Insert Details into List
-                    String[] feedbackDetails = feedbackScanner.nextLine().split(";");
+                String[] feedbackDetails;
+                while((feedbackDetails = feedbackReader.readLine().split(";")) != null) {
 
                     // Get Full Creator and Receiver Details
                     IUser fCreator = null;
@@ -200,11 +202,12 @@ public final class EvaluationActivity {
 
         // Read if File Exists
         if (Files.exists(feedbackPath)) {
-            try (FileWriter feedbackWriter = new FileWriter(feedbackPath.normalize().toString())) {
+            try (BufferedWriter feedbackWriter = new BufferedWriter(new FileWriter(feedbackPath.normalize().toString()))) {
 
                 // Write User into File
                 for (Feedback feedback : feedbackList) {
                     feedbackWriter.write(feedback.toString());
+                    feedbackWriter.newLine();
                 }
             }
             catch (IOException e) {

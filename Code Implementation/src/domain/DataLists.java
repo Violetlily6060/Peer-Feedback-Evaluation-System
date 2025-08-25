@@ -1,6 +1,9 @@
 package domain;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class DataLists implements IDataStore {
     public List<IUser> studentList = userRead("student");
@@ -158,11 +160,12 @@ public class DataLists implements IDataStore {
 
         // Read if File Exist
         if (Files.exists(userPath)) {
-            try (Scanner userScanner = new Scanner(userPath)) {
-                while(userScanner.hasNextLine()) {
+            try (BufferedReader userReader = new BufferedReader(new FileReader(userPath.normalize().toString()))) {
 
-                    // Insert Details into List
-                    String[] userDetails = userScanner.nextLine().split(";");
+                
+                // Insert Details into List
+                String[] userDetails;
+                while((userDetails = userReader.readLine().split(";")) != null) {
                     switch (userRole) {
                         case "student" -> {
                             userList.add(new Student(userDetails[0], userDetails[1], userDetails[2]));
@@ -211,11 +214,12 @@ public class DataLists implements IDataStore {
 
         // Write if File Exists
         if (Files.exists(userPath)) {
-            try (FileWriter userWriter = new FileWriter(userPath.normalize().toString())) {
+            try (BufferedWriter userWriter = new BufferedWriter(new FileWriter(userPath.normalize().toString()))) {
 
                 // Write User into File
                 for (IUser user : userList) {
                     userWriter.write(user.toString());
+                    userWriter.newLine();
                 }
                 userWriter.close();
             }
@@ -246,11 +250,11 @@ public class DataLists implements IDataStore {
 
         // Read if File Exist
         if (Files.exists(activityPath)) {
-            try (Scanner activityScanner = new Scanner(activityPath)) {
-                while(activityScanner.hasNext()) {
+            try (BufferedReader activityReader = new BufferedReader(new FileReader(activityPath.normalize().toString()))) {
 
-                    // Insert Details into List
-                    String[] activityDetails = activityScanner.nextLine().split(";");
+                // Insert Details into List
+                String[] activityDetails;
+                while((activityDetails = activityReader.readLine().split(";")) != null) {
 
                     // Get Full Lecturer Details
                     for (IUser lecturer : lecturerList) {
@@ -287,11 +291,12 @@ public class DataLists implements IDataStore {
 
         // Write if File Exists
         if (Files.exists(activityPath)) {
-            try (FileWriter activityWriter = new FileWriter(activityPath.normalize().toString())) {
+            try (BufferedWriter activityWriter = new BufferedWriter(new FileWriter(activityPath.normalize().toString()))) {
 
                 // Write User into File
                 for (EvaluationActivity activity : activityList) {
                     activityWriter.write(activity.toString());
+                    activityWriter.newLine();
                 }
             }
             catch (IOException e) {
