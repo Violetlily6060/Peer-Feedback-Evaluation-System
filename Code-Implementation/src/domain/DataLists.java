@@ -81,10 +81,8 @@ public class DataLists implements IDataStore {
             case "administrator" -> {
                 administratorList.add(new Administrator(userID, newPassword, newName));
             }
-            default -> {
-                userWrite(userRole);
-            }
         }
+        userWrite(userRole);
     }
 
     // Update User Details in List
@@ -118,10 +116,8 @@ public class DataLists implements IDataStore {
                     }
                 }       
             }
-            default -> {
-                userWrite(userRole);
-            }
         }
+        userWrite(userRole);
     }
 
     // Delete User from List
@@ -153,6 +149,7 @@ public class DataLists implements IDataStore {
                 }
             }
         }
+        userWrite(userRole);
     }
 
     // Validate User Login
