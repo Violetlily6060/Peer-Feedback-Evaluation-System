@@ -92,25 +92,28 @@ public class DataLists implements IDataStore {
     public void updateUser(String userRole, String userID, String newPassword, String newName) {
         switch(userRole) {
             case "student" -> {
-                for (int i = 0; i < studentList.size(); i++) {
-                    if (studentList.get(i).getUserID().equals(userID)) {
-                        studentList.set(i, new Student(userID, newPassword, newName));
+                for (IUser student : studentList) {
+                    if (student.getUserID().equals(userID)) {
+                        student.setPassword(newPassword);
+                        student.setName(newName);
                         break;
                     }
                 }
             }
             case "lecturer" -> {
-                for (int i = 0; i < lecturerList.size(); i++) {
-                    if (lecturerList.get(i).getUserID().equals(userID)) {
-                        lecturerList.set(i, new Lecturer(userID, newPassword, newName));
+                for (IUser lecturer : lecturerList) {
+                    if (lecturer.getUserID().equals(userID)) {
+                        lecturer.setPassword(newPassword);
+                        lecturer.setName(newName);
                         break;
                     }
                 }
             }
             case "administrator" -> {
-                for (int i = 0; i < administratorList.size(); i++) {
-                    if (administratorList.get(i).getUserID().equals(userID)) {
-                        administratorList.set(i, new Administrator(userID, newPassword, newName));
+                for (IUser administrator : administratorList) {
+                    if (administrator.getUserID().equals(userID)) {
+                        administrator.setPassword(newPassword);
+                        administrator.setName(newName);
                         break;
                     }
                 }       
@@ -244,7 +247,7 @@ public class DataLists implements IDataStore {
                         fReceiver = student;
                     }
                     if (fCreator != null && fReceiver != null) {
-                        activity.updateFeedback(new Feedback(feedbackID, fCreator, fReceiver, dateCreated, dateUpdated, content));
+                        activity.updateFeedback(feedbackID, dateUpdated, content);
                         break;
                     }
                 }
