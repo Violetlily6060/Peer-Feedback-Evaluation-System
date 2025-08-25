@@ -2,7 +2,6 @@ package app;
 
 import domain.*;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -255,32 +254,45 @@ public class ConsoleUI {
     private static void changeUsername(IUser user) {
         String newName = null;
 
-        while (true) {
-            clearScreen();
-            hardline();
-            System.out.println("Changing Username for " + user.getName());
-            hardline();
-            System.out.println("Please enter a new name");
-            softline();
-            System.out.print("New Name: ");
-            newName = input.nextLine();
+        clearScreen();
+        hardline();
+        System.out.println("Changing Username for " + user.getName());
+        hardline();
+        System.out.println("Please enter a new name");
+        softline();
+        System.out.print("New Name: ");
+        newName = input.nextLine();
 
-        }
+        controller.updateUser(user.getRole(), user.getUserID(), user.getPassword(), newName);
+
+        clearScreen();
+        hardline();
+        System.out.println("Username changed to " + newName + " successfully");
+        hardline();
+        System.out.print("Type anything to continue: ");
+        input.nextLine();
     }
 
     private static void changePassword(IUser user) {
         String newPassword = null;
 
-        while (true) {
-            clearScreen();
-            hardline();
-            System.out.println("Changing Password for " + user.getName());
-            hardline();
-            System.out.println("Please enter a new password");
-            softline();
-            System.out.print("New password: ");
-            newPassword = input.nextLine();
-        }
+        clearScreen();
+        hardline();
+        System.out.println("Changing Password for " + user.getName());
+        hardline();
+        System.out.println("Please enter a new password");
+        softline();
+        System.out.print("New password: ");
+        newPassword = input.nextLine();
+
+        controller.updateUser(user.getRole(), user.getUserID(), newPassword, user.getName());
+
+        clearScreen();
+        hardline();
+        System.out.println("Password changed successfully");
+        hardline();
+        System.out.print("Type anything to continue: ");
+        input.nextLine();
     }
 
     private static void submitEvaluation() {
