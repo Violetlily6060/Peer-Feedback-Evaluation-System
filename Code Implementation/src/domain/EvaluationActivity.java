@@ -74,13 +74,12 @@ public final class EvaluationActivity {
         Path directory = absPath.resolve(Paths.get("Database", "Evaluation Activity", activityID));
         Path participantPath = directory.resolve(Paths.get("participant.txt"));
 
-        try {
-            // Read if File Exist
-            if (Files.exists(participantPath)) {
-                Scanner participantScanner = new Scanner(participantPath);
-                while(participantScanner.hasNext()) {
+        // Read if File Exist
+        if (Files.exists(participantPath)) {
+            try (Scanner participantScanner = new Scanner(participantPath)) {
+                while(participantScanner.hasNextLine()) {
 
-                    // Insert Details into List
+                    // Get Full Participant Details
                     String participantID = participantScanner.nextLine();
                     for (IUser student : studentList) {
                         if (student.getUserID().equals(participantID)) {
@@ -89,17 +88,21 @@ public final class EvaluationActivity {
                         }
                     }
                 }
-                participantScanner.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Reading from File: " + e.getMessage());
+            }
+        }
 
-            // Create New File if File Does Not Exist
-            else {
+        // Create Directory & File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(participantPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
         return participants;
     }
@@ -111,26 +114,29 @@ public final class EvaluationActivity {
         Path directory = absPath.resolve(Paths.get("Database", "Evaluation Activity", activityID));
         Path participantPath = directory.resolve(Paths.get("participant.txt"));
 
-        try {
-            // Read if File Exists
-            if (Files.exists(participantPath)) {
-                FileWriter participantWriter = new FileWriter(participantPath.normalize().toString());
+        // Write if File Exists
+        if (Files.exists(participantPath)) {
+            try (FileWriter participantWriter = new FileWriter(participantPath.normalize().toString())) {
 
                 // Write User into File
                 for (IUser participant : participantList) {
                     participantWriter.write(participant.getUserID());
                 }
-                participantWriter.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Reading from File: " + e.getMessage());
+            }
+        }
             
-            // Create New File if File Does Not Exist
-            else {
+        // Create New File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(participantPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error Creating File: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
     }
 
@@ -142,10 +148,9 @@ public final class EvaluationActivity {
         Path directory = absPath.resolve(Paths.get("Database", "Evaluation Activity", activityID));
         Path feedbackPath = directory.resolve(Paths.get("feedback.txt"));
 
-        try {
-            // Read if File Exist
-            if (Files.exists(feedbackPath)) {
-                Scanner feedbackScanner = new Scanner(feedbackPath);
+        // Read if File Exist
+        if (Files.exists(feedbackPath)) {
+            try (Scanner feedbackScanner = new Scanner(feedbackPath)) {
                 while(feedbackScanner.hasNext()) {
 
                     // Insert Details into List
@@ -167,17 +172,21 @@ public final class EvaluationActivity {
                         }
                     }  
                 }
-                feedbackScanner.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Reading from File: " + e.getMessage());
+            }
+        }
 
-            // Create New File if File Does Not Exist
-            else {
+        // Create New File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(feedbackPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error Creating File: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
         return feedbacks;
     }
@@ -189,26 +198,29 @@ public final class EvaluationActivity {
         Path directory = absPath.resolve(Paths.get("Database", "Evaluation Activity", activityID));
         Path feedbackPath = directory.resolve(Paths.get("feedback.txt"));
 
-        try {
-            // Read if File Exists
-            if (Files.exists(feedbackPath)) {
-                FileWriter feedbackWriter = new FileWriter(feedbackPath.normalize().toString());
+        // Read if File Exists
+        if (Files.exists(feedbackPath)) {
+            try (FileWriter feedbackWriter = new FileWriter(feedbackPath.normalize().toString())) {
 
                 // Write User into File
                 for (Feedback feedback : feedbackList) {
                     feedbackWriter.write(feedback.toString());
                 }
-                feedbackWriter.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Writing to File: " + e.getMessage());
+            }
+        }
             
-            // Create New File if File Does Not Exist
-            else {
+        // Create New File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(feedbackPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error Creating File: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
     }
 

@@ -156,11 +156,10 @@ public class DataLists implements IDataStore {
         Path directory = absPath.resolve(Paths.get("Database"));
         Path userPath = directory.resolve(Paths.get(userRole + ".txt"));
 
-        try {
-            // Read if File Exist
-            if (Files.exists(userPath)) {
-                Scanner userScanner = new Scanner(userPath);
-                while(userScanner.hasNext()) {
+        // Read if File Exist
+        if (Files.exists(userPath)) {
+            try (Scanner userScanner = new Scanner(userPath)) {
+                while(userScanner.hasNextLine()) {
 
                     // Insert Details into List
                     String[] userDetails = userScanner.nextLine().split(";");
@@ -176,17 +175,22 @@ public class DataLists implements IDataStore {
                         }
                     }
                 }
-                userScanner.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Reading from File: " + e.getMessage());
+            }
+        }
 
-            // Create New File if File Does Not Exist
-            else {
+        // Create Directory & File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(userPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }    
+            
         }
         return userList;
     }
@@ -205,10 +209,9 @@ public class DataLists implements IDataStore {
         Path directory = absPath.resolve(Paths.get("Database"));
         Path userPath = directory.resolve(Paths.get(userRole + ".txt"));
 
-        try {
-            // Read if File Exists
-            if (Files.exists(userPath)) {
-                FileWriter userWriter = new FileWriter(userPath.normalize().toString());
+        // Write if File Exists
+        if (Files.exists(userPath)) {
+            try (FileWriter userWriter = new FileWriter(userPath.normalize().toString())) {
 
                 // Write User into File
                 for (IUser user : userList) {
@@ -216,15 +219,20 @@ public class DataLists implements IDataStore {
                 }
                 userWriter.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Writing to File: " + e.getMessage());
+            }
+        }
             
-            // Create New File if File Does Not Exist
-            else {
+        // Create Directory & File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(userPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
     }
 
@@ -236,10 +244,9 @@ public class DataLists implements IDataStore {
         Path directory = absPath.resolve(Paths.get("Database"));
         Path activityPath = directory.resolve(Paths.get("activity.txt"));
 
-        try {
-            // Read if File Exist
-            if (Files.exists(activityPath)) {
-                Scanner activityScanner = new Scanner(activityPath);
+        // Read if File Exist
+        if (Files.exists(activityPath)) {
+            try (Scanner activityScanner = new Scanner(activityPath)) {
                 while(activityScanner.hasNext()) {
 
                     // Insert Details into List
@@ -253,17 +260,20 @@ public class DataLists implements IDataStore {
                         }
                     }
                 }
-                activityScanner.close();
             }
-
-            // Create New File if File Does Not Exist
-            else {
+            catch (IOException e) {
+                System.out.println("Error Reading from File: " + e.getMessage());
+            }
+        }
+        // Create Directory & File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(activityPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
         return activities;
     }
@@ -275,26 +285,29 @@ public class DataLists implements IDataStore {
         Path directory = absPath.resolve(Paths.get("Database"));
         Path activityPath = directory.resolve(Paths.get("activity.txt"));
 
-        try {
-            // Read if File Exists
-            if (Files.exists(activityPath)) {
-                FileWriter activityWriter = new FileWriter(activityPath.normalize().toString());
+        // Write if File Exists
+        if (Files.exists(activityPath)) {
+            try (FileWriter activityWriter = new FileWriter(activityPath.normalize().toString())) {
 
                 // Write User into File
                 for (EvaluationActivity activity : activityList) {
                     activityWriter.write(activity.toString());
                 }
-                activityWriter.close();
             }
+            catch (IOException e) {
+                System.out.println("Error Writing to File: " + e.getMessage());
+            }
+        }
             
-            // Create New File if File Does Not Exist
-            else {
+        // Create Directory & File if File Does Not Exist
+        else {
+            try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(activityPath.normalize().toString()).createNewFile();
             }
-        }
-        catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Error Creating New File: " + e.getMessage());
+            }
         }
     }
 }
