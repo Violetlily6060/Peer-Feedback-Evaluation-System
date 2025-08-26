@@ -171,12 +171,20 @@ public class DataLists implements IDataStore {
                         break;
                     }
                 }
+                for (EvaluationActivity activity : activityList) {
+                    activity.removeParticipant(userID);
+                }
             }
             case "lecturer" -> {
                 for (int i = 0; i < lecturerList.size(); i++) {
                     if (lecturerList.get(i).getUserID().equals(userID)) {
                         lecturerList.remove(i);
                         break;
+                    }
+                }
+                for (EvaluationActivity activity : activityList) {
+                    if (activity.getCreator().getUserID().equals(userID)) {
+                        activityList.remove(activity);
                     }
                 }
             }
