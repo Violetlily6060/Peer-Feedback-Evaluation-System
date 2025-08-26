@@ -61,17 +61,34 @@ public final class EvaluationActivity {
         return directory;
     }
 
-    // Other Functions
+    // Participant Functions
+    // Add Participants to List
     public void addParticipant(IUser newParticipant) {
         participantList.add(newParticipant);
         participantWrite();
     }
 
+    // Exclude Participants from List
+    public List<IUser> participantExlude(String participantID) {
+        List<IUser> excludedList = new ArrayList<>();
+
+        // Search for participant
+        for (IUser participant : participantList) {
+            if (!participant.getUserID().equals(participantID)) {
+                excludedList.add(participant);
+            }
+        }
+        return excludedList;
+    }
+
+    // Feedback Functions
+    // Add New Feedback to List
     public void addFeedback(Feedback newFeedback) {
         feedbackList.add(newFeedback);
         feedbackWrite();
     }
 
+    // Update Existing Feedback
     public void updateFeedback(String feedbackID, String dateUpdated, String content) {
         for (Feedback feedback : feedbackList) {
             if (feedback.getFeedbackID().equals(feedbackID)) {
@@ -83,6 +100,34 @@ public final class EvaluationActivity {
         feedbackWrite();
     }
 
+    // Filter Feedback by Creator ID
+    public List<Feedback> feedbackFilterByCreator(String creatorID) {
+        List<Feedback> filteredList = new ArrayList<>();
+
+        // Search for Creator
+        for (Feedback feedback : feedbackList) {
+            if (feedback.getCreator().getUserID().equals(creatorID)) {
+                filteredList.add(feedback);
+            }
+        }
+        return filteredList;
+    }
+
+    // Filter Feedback by Receiver ID
+    public List<Feedback> feedbackFilterByReceiver(String receiverID) {
+        List<Feedback> filteredList = new ArrayList<>();
+
+        // Search for Receiver
+        for (Feedback feedback : feedbackList) {
+            if (feedback.getReceiver().getUserID().equals(receiverID)) {
+                filteredList.add(feedback);
+            }
+        }
+        return filteredList;
+    }
+
+
+    // File Functions
     // Read Participant From File
     public List<IUser> participantRead(List<IUser> studentList) {
         List<IUser> participants = new ArrayList<>();
