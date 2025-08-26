@@ -56,4 +56,23 @@ public final class Feedback {
     public String toString() {
         return feedbackID + ";" + creator.getUserID() + ";" + receiver.getUserID() + ";" + dateCreated + ";" + dateUpdated + ";" + content;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Feedback feedback = (Feedback) obj;
+        return feedbackID.equals(feedback.getFeedbackID());
+    }
+
+    @Override
+    public int hashCode() {
+        return feedbackID != null ? feedbackID.hashCode() : 0;
+    }
 }

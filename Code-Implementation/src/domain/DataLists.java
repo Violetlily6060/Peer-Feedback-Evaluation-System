@@ -58,7 +58,7 @@ public class DataLists implements IDataStore {
     
     // Filter Evaluation Activity List by Creator ID
     @Override
-    public List<EvaluationActivity> activityFilterByCreator(String creatorID) {
+    public List<EvaluationActivity> getActivityFilterByCreator(String creatorID) {
         List<EvaluationActivity> filteredList = new ArrayList<>();
         for (EvaluationActivity activity : activityList) {
             if (activity.getCreator().getUserID().equals(creatorID)) {
@@ -70,7 +70,7 @@ public class DataLists implements IDataStore {
 
     // Exclude Participants By User ID in Evaluation Activity
     @Override
-    public List<IUser> participantExclude(String activityID, String participantID) {
+    public List<IUser> getParticipantExclude(String activityID, String participantID) {
 
          // Search Evaluation Activity
         for (EvaluationActivity activity : activityList) {
@@ -83,7 +83,7 @@ public class DataLists implements IDataStore {
 
     // Filter Feedback By Creator ID in Evaluation Activity
     @Override
-    public List<Feedback> feedbackFilterByCreator(String activityID, String creatorID) {
+    public List<Feedback> getFeedbackFilterByCreator(String activityID, String creatorID) {
 
         // Search for Evaluation Activity
         for (EvaluationActivity activity : activityList) {
@@ -96,7 +96,7 @@ public class DataLists implements IDataStore {
 
     // Filter Feedback By Receiver ID in Evaluation Activity
     @Override
-    public List<Feedback> feedbackFilterByReceiver(String activityID, String receiverID) {
+    public List<Feedback> getFeedbackFilterByReceiver(String activityID, String receiverID) {
 
         // Seach for Evaluation Activity
         for (EvaluationActivity activity : activityList) {
@@ -171,12 +171,20 @@ public class DataLists implements IDataStore {
                         break;
                     }
                 }
+                for (EvaluationActivity activity : activityList) {
+                    activity.removeParticipant(userID);
+                }
             }
             case "lecturer" -> {
                 for (int i = 0; i < lecturerList.size(); i++) {
                     if (lecturerList.get(i).getUserID().equals(userID)) {
                         lecturerList.remove(i);
                         break;
+                    }
+                }
+                for (EvaluationActivity activity : activityList) {
+                    if (activity.getCreator().getUserID().equals(userID)) {
+                        activityList.remove(activity);
                     }
                 }
             }

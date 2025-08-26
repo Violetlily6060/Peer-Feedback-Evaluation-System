@@ -68,6 +68,23 @@ public final class EvaluationActivity {
         participantWrite();
     }
 
+    // Remove Participants from List
+    public void removeParticipant(String participantID) {
+
+        // Search for Participant
+        for (IUser participant : participantList) {
+            if (participant.getUserID().equals(participantID)) {
+                participantList.remove(participant);
+            }
+        }
+        for (Feedback feedback : feedbackList) {
+            if (feedback.getCreator().getUserID().equals(participantID) || 
+                feedback.getReceiver().getUserID().equals(participantID)) {
+                feedbackList.remove(feedback);
+            }
+        }
+    }
+
     // Exclude Participants from List
     public List<IUser> participantExlude(String participantID) {
         List<IUser> excludedList = new ArrayList<>();
@@ -262,9 +279,28 @@ public final class EvaluationActivity {
         }
     }
 
-    // To String Methods
+    // Base Functions
     @Override
     public String toString() {
         return activityID + ";" + name + ";" + creator.getUserID();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        EvaluationActivity activity = (EvaluationActivity) obj;
+        return activityID.equals(activity.getActivityID());
+    }
+
+    @Override
+    public int hashCode() {
+        return activityID != null ? activityID.hashCode() : 0;
     }
 }

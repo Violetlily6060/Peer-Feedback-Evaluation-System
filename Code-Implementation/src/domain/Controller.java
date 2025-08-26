@@ -34,6 +34,24 @@ public class Controller {
     // Get List of Feedback Filtered by Receiver ID
     public List<Feedback> getFeedbackFilteredByReceiver(String activityID, String receiverID) {
         return dataLists.feedbackFilterByReceiver(activityID, receiverID);
+      
+    public List<EvaluationActivity> activityFilteredByCreator(String creatorID) {
+        return dataLists.getActivityFilterByCreator(creatorID);
+    }
+
+    // Get List of Participant Exclude Participant ID
+    public List<IUser> participantExlude(String activityID, String participantID) {
+        return dataLists.getParticipantExclude(activityID, participantID);
+    }
+
+    // Get List of Feedback Filtered by Creator ID
+    public List<Feedback> feedbackFilterByCreator(String activityID, String creatorID) {
+        return dataLists.getFeedbackFilterByCreator(activityID, creatorID);
+    }
+
+    // Get List of Feedback Filtered by Receiver ID
+    public List<Feedback> feedbackFilteredByReceiver(String activityID, String receiverID) {
+        return dataLists.getFeedbackFilterByReceiver(activityID, receiverID);
     }
 
     // User Functions
