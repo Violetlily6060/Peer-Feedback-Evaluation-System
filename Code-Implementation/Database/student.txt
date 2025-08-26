@@ -1,1 +1,3 @@
-yes;yes;yes
+s1;student1;student1
+s2;student2;student2
+s3;student3;student3
