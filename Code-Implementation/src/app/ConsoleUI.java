@@ -482,7 +482,7 @@ public class ConsoleUI {
 
     private static void submitEvaluation() {
         boolean invalid = false;
-        List<EvaluationActivity> activities = controller.getActivityList();
+        List<EvaluationActivity> activities = controller.getActivityFilteredByCreator(currentUser.getUserID());
 
         do {
             clearScreen();
@@ -496,9 +496,7 @@ public class ConsoleUI {
             System.out.println("[enter \"q\" to go back]");
             softline();
             for (EvaluationActivity a : activities) {
-                if (a.getParticipantList().contains(currentUser)) {
-                    System.out.printf("%-7s %s\n", a.getActivityID(), a.getName());
-                }
+                System.out.printf("%-7s %s\n", a.getActivityID(), a.getName());
             }
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING EVALUATION ACTIVITY");
@@ -513,7 +511,7 @@ public class ConsoleUI {
             }
 
             for (EvaluationActivity a : activities) {
-                if (a.getActivityID().equals(activityID) && a.getParticipantList().contains(currentUser)) {
+                if (a.getActivityID().equals(activityID)) {
                     createFeedback(a);
                     invalid = false;
                     break;
@@ -525,20 +523,9 @@ public class ConsoleUI {
 
     private static void createFeedback(EvaluationActivity activity) {
         boolean invalid = false;
-        List<IUser> users = activity.getParticipantList();
-        List<Feedback> feedbacks = activity.getFeedbackList();
+        List<IUser> peers = controller.getParticipantExlude(activity.getActivityID(), currentUser.getUserID());
 
-        users.remove(currentUser);
-
-        for (int i = 0; i < users.size(); i++) {
-            for (Feedback f : feedbacks) {
-                if (f.getReceiver().equals(users.get(i))) {
-                    users.remove(i);
-                }
-            }
-        }
-
-        if (users.isEmpty()) {
+        if (peers.isEmpty()) {
             clearScreen();
             hardline();
             System.out.println("You have no more peers to give feedbacks");
@@ -556,8 +543,8 @@ public class ConsoleUI {
             System.out.println("Please select the student to give feedback");
             System.out.println("[enter \"q\" to go back]");
             softline();
-            for (IUser u : users) {
-                System.out.printf("%-5s %s\n", u.getUserID(), u.getName());
+            for (IUser p : peers) {
+                System.out.printf("%-5s %s\n", p.getUserID(), p.getName());
             }
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING STUDENT");
@@ -572,8 +559,8 @@ public class ConsoleUI {
                 return;
             }
 
-            for (IUser u : users) {
-                if (u.getUserID().equals(studentID)) {
+            for (IUser p : peers) {
+                if (p.getUserID().equals(studentID)) {
                     System.out.println();
                     System.out.println("Enter your feedback below");
                     softline();
