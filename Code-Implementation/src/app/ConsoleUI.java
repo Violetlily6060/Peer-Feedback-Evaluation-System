@@ -8,75 +8,82 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI {
-    private static Controller controller = new Controller();
-    private static Scanner input = new Scanner(System.in);
-    private static boolean logged = false;
-    private static IUser currentUser = null;
+    private final Controller controller = new Controller();
+    private final Scanner input = new Scanner(System.in);
+    private IUser currentUser = null;
 
     public static void main(String[] args) {
-        if (controller.getUserList("administrator").isEmpty()) {
-            controller.addUser("administrator", "a1", "admin", "admin");
-        }
+        ConsoleUI console = new ConsoleUI();
 
+        // Page Sequence
         while (true) {
-            login();
+            IUser currentUser = console.login();
 
             if (currentUser instanceof Student) {
-                studentMenu();
-            } else if (currentUser instanceof Lecturer) {
-                lecturerMenu();
-            } else if (currentUser instanceof Administrator) {
-                adminMenu();
-            } else {
+                console.studentMenu();
+            }
+            else if (currentUser instanceof Lecturer) {
+                console.lecturerMenu();
+            }
+            else if (currentUser instanceof Administrator) {
+                console.adminMenu();
+            }
+            else {
                 break;
             }
         }
     }
 
-    private static void login() {
+    // Login Page
+    private IUser login() {
+        // Create New Administrator Account if no Accounts Exists
+        if (controller.getUserList("administrator").isEmpty()) {
+            controller.addUser("administrator", "a1", "admin", "admin");
+        }
         boolean invalid = false;
 
-        while (!logged) {
-            clearScreen();
-            hardline();
-            System.out.println("Peer Feedback Evaluain Menu");
-            hardline();
-            System.out.println("Please enter your credentials to login");
+        while (currentUser == null) {
+            // User Interface
+            header();
+            System.out.println("Enter your credentials to login");
             softline();
             System.out.println("enter \"q\" for ID and Password to quit system");
             if (invalid) {
                 System.out.println("INCORRECT USERNAME OR PASSWORD, PLEASE TRY AGAIN");
-            } else {
+                invalid = false;
+            } 
+            else {
                 System.out.println();
             }
+
+            // User Input
             System.out.print("User ID: ");
             String userID = input.nextLine();
             System.out.print("Password: ");
             String password = input.nextLine();
 
-            if (userID.equals("q") && password.equals("q")) {
-                break;
+            // User Input Processing
+            if (userID.toUpperCase().equals("Q") && password.toUpperCase().equals("Q")) {
+                return null;
             }
-
-            currentUser = controller.validateLogin(userID, password);
-            if (currentUser == null) {
-                invalid = true;
-            } else {
-                invalid = false;
-                logged = true;
+            else {
+                currentUser = controller.validateLogin(userID, password);
+                if (currentUser == null) {
+                    invalid = true;
+                }
             }
         }
+        return currentUser;
     }
 
-    private static void studentMenu() {
-        int choice = 0;
+    // Student Main Menu
+    private void studentMenu() {
+        int choice;
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
-            System.out.println("Peer Feedback Evaluation Student Main Menu");
-            hardline();
+            // User Interface
+            header();
             System.out.println("What would you like to do?");
             softline();
             System.out.println("1. Manage Profile");
@@ -84,49 +91,48 @@ public class ConsoleUI {
             System.out.println("3. View Feedback");
             System.out.println("4. Logout");
             softline();
-            if (invalid)
+            if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 4");
-            else
+                invalid = false;
+            }
+            else {
                 System.out.println();
-
+            }
             System.out.print("Choice (1-4): ");
+
+            // User Input
             try {
-                choice = Integer.parseInt(input.nextLine());
-            } catch (NumberFormatException e) {
+                choice = Integer.parseInt(userInputFormating(true));
+            } 
+            catch (NumberFormatException e) {
                 choice = 0;
             }
 
+            // User Input Processing
             if (choice > 0 && choice < 5) {
-                invalid = false;
                 switch (choice) {
-                    case 1:
-                        managePersonalProfile(currentUser);
-                        break;
-                    case 2:
-                        submitEvaluation();
-                        break;
-                    case 3:
-                        viewEvaluation();
-                        break;
+                    case 1 -> managePersonalProfile(currentUser);
+                    case 2 -> submitEvaluation();
+                    case 3 -> viewEvaluation();
                 }
-            } else {
+            } 
+            else {
                 invalid = true;
             }
         } while (choice != 4);
 
-        logged = false;
+        // Log Out
         currentUser = null;
     }
 
-    private static void lecturerMenu() {
-        int choice = 0;
+    // Lecturer Main Menu
+    private void lecturerMenu() {
+        int choice;
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
-            System.out.println("Peer Feedback Evaluation Lecturer Main Menu");
-            hardline();
+            // User Interface
+            header();
             System.out.println("What would you like to do?");
             softline();
             System.out.println("1. Manage Profile");
@@ -134,49 +140,48 @@ public class ConsoleUI {
             System.out.println("3. Generate Feedback Report");
             System.out.println("4. Logout");
             softline();
-            if (invalid)
+            if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 4");
-            else
+                invalid = false;
+            }
+            else {
                 System.out.println();
-
+            }
             System.out.print("Choice (1-4): ");
+
+            // User Input
             try {
-                choice = Integer.parseInt(input.nextLine());
-            } catch (NumberFormatException e) {
+                choice = Integer.parseInt(userInputFormating(true));
+            } 
+            catch (NumberFormatException e) {
                 choice = 0;
             }
 
+            // User Input Processing
             if (choice > 0 && choice < 5) {
-                invalid = false;
                 switch (choice) {
-                    case 1:
-                        managePersonalProfile(currentUser);
-                        break;
-                    case 2:
-                        createEvaluationActivity();
-                        break;
-                    case 3:
-                        viewEvaluation();
-                        break;
+                    case 1 -> managePersonalProfile(currentUser);
+                    case 2 -> createEvaluationActivity();
+                    case 3 -> viewEvaluation();
                 }
-            } else {
+            } 
+            else {
                 invalid = true;
             }
         } while (choice != 4);
 
-        logged = false;
+        // Log Out
         currentUser = null;
     }
 
-    private static void adminMenu() {
-        int choice = 0;
+    // Administrator Menu
+    private void adminMenu() {
+        int choice;
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
-            System.out.println("Peer Feedback Evaluation Administrator Main Menu");
-            hardline();
+            // User Interface
+            header();
             System.out.println("What would you like to do?");
             softline();
             System.out.println("1. Manage All Profile");
@@ -184,47 +189,48 @@ public class ConsoleUI {
             System.out.println("3. Generate Feedback Report");
             System.out.println("4. Logout");
             softline();
-            if (invalid)
+            if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 4");
-            else
+                invalid = false;
+            }
+            else {
                 System.out.println();
-
+            }
             System.out.print("Choice (1-4): ");
+
+            // User Input
             try {
-                choice = Integer.parseInt(input.nextLine());
-            } catch (NumberFormatException e) {
+                choice = Integer.parseInt(userInputFormating(true));
+            } 
+            catch (NumberFormatException e) {
                 choice = 0;
             }
 
+            // User Input Processing
             if (choice > 0 && choice < 5) {
-                invalid = false;
                 switch (choice) {
-                    case 1:
-                        manageAllProfile();
-                        break;
-                    case 2:
-                        createAccount();
-                        break;
-                    case 3:
-                        viewEvaluation();
-                        break;
+                    case 1 -> manageAllProfile();
+                    case 2 -> createAccount();
+                    case 3 -> viewEvaluation();
                 }
-            } else {
+            } 
+            else {
                 invalid = true;
             }
         } while (choice != 4);
 
-        logged = false;
+        // Log Out
         currentUser = null;
     }
 
-    private static void managePersonalProfile(IUser user) {
-        int choice = 0;
+    // Managing Profile Menu
+    private void managePersonalProfile(IUser user) {
+        int choice;
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Manage Profile for " + user.getName());
             hardline();
             System.out.println("What would you like to do?");
@@ -235,40 +241,42 @@ public class ConsoleUI {
             softline();
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 3");
-            } else {
+                invalid = false;
+            } 
+            else {
                 System.out.println();
             }
-
             System.out.print("Choice (1-3): ");
+
+            // User Input
             try {
-                choice = Integer.parseInt(input.nextLine());
-            } catch (NumberFormatException e) {
+                choice = Integer.parseInt(userInputFormating(true));
+            } 
+            catch (NumberFormatException e) {
                 choice = 0;
             }
 
+            // User Input Processing
             if (choice > 0 && choice < 4) {
-                invalid = false;
                 switch (choice) {
-                    case 1:
-                        changeUsername(user);
-                        break;
-                    case 2:
-                        changePassword(user);
-                        break;
+                    case 1 -> changeUsername(user);
+                    case 2 -> changePassword(user);
                 }
-            } else {
+            } 
+            else {
                 invalid = true;
             }
         } while (choice != 3);
     }
 
-    private static void manageProfileByAdmin(IUser user) {
-        int choice = 0;
+    // Manage Profile Menu for Admin
+    private void manageProfileByAdmin(IUser user) {
+        int choice;
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Manage Profile for " + user.getName());
             hardline();
             System.out.println("What would you like to do?");
@@ -280,42 +288,42 @@ public class ConsoleUI {
             softline();
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 3");
+                invalid = false;
             } else {
                 System.out.println();
             }
-
             System.out.print("Choice (1-3): ");
+
+            // User Input
             try {
-                choice = Integer.parseInt(input.nextLine());
-            } catch (NumberFormatException e) {
+                choice = Integer.parseInt(userInputFormating(true));
+            } 
+            catch (NumberFormatException e) {
                 choice = 0;
             }
 
+            // User Input Processing
             if (choice > 0 && choice < 4) {
-                invalid = false;
                 switch (choice) {
-                    case 1:
-                        changeUsername(user);
-                        break;
-                    case 2:
-                        changePassword(user);
-                        break;
-                    case 3:
-                        deleteProfile(user);
+                    case 1 -> changeUsername(user);
+                    case 2 -> changePassword(user);
+                    case 3 -> deleteProfile(user);
                 }
-            } else {
+            } 
+            else {
                 invalid = true;
             }
         } while (choice != 3);
     }
 
-    private static void manageAllProfile() {
-        int choice = 0;
+    // Profile Selection by Admin
+    private void manageAllProfile() {
+        int choice;
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Manage All Profile");
             hardline();
             System.out.println("What would you like to do?");
@@ -326,39 +334,37 @@ public class ConsoleUI {
             softline();
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 3");
+                invalid = false;
             } else {
                 System.out.println();
             }
-
             System.out.print("Choice (1-3): ");
+
+            // User Input
             try {
-                choice = Integer.parseInt(input.nextLine());
+                choice = Integer.parseInt(userInputFormating(true));
             } catch (NumberFormatException e) {
                 choice = 0;
             }
 
+            // User Input Formatting
             if (choice > 0 && choice < 4) {
-                invalid = false;
                 switch (choice) {
-                    case 1:
-                        managePersonalProfile(currentUser);
-                        break;
-
-                    case 2:
-                        manageOthersProfile();
-                        break;
+                    case 1 -> managePersonalProfile(currentUser);
+                    case 2 -> manageOthersProfile();
                 }
             }
         } while (choice != 3);
     }
 
-    private static void manageOthersProfile() {
+    // Search Profile of Users
+    private void manageOthersProfile() {
         List<IUser> users = controller.getUserList("all");
         boolean invalid = false;
 
         while (true) {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Searching Profile to Manage");
             hardline();
             System.out.println("Enter the profile user ID");
@@ -366,88 +372,101 @@ public class ConsoleUI {
             System.out.println("[Enter \"q\" to go back]");
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING USER ID");
-            } else {
+            } 
+            else {
                 System.out.println();
             }
 
+            // User Input
             System.out.print("User ID: ");
             String userID = input.nextLine();
 
-            if (userID.equals("q")) {
+            // User input Processing
+            if (userID.toUpperCase().equals("Q")) {
                 return;
             }
-
-            for (IUser u : users) {
-                if (u.getUserID().equals(userID)) {
-                    manageProfileByAdmin(u);
-                    return;
+            else {
+                for (IUser u : users) {
+                    if (u.getUserID().equals(userID)) {
+                        manageProfileByAdmin(u);
+                        return;
+                    }
                 }
             }
-
             invalid = true;
         }
     }
 
-    private static void changeUsername(IUser user) {
-        String newName = null;
+    // Change Username Menu
+    private void changeUsername(IUser user) {
+        String newName;
 
-        clearScreen();
-        hardline();
+        // User Interface
+        header();
         System.out.println("Changing Username for " + user.getName());
         hardline();
         System.out.println("Please enter a new name");
         System.out.println("[enter \"q\" to go back]");
         softline();
-        System.out.print("New Name: ");
-        newName = input.nextLine();
 
-        if (newName.equals("q")) {
+        // User Input
+        System.out.print("New Name: ");
+        newName = userInputFormating(false);
+
+        // User Input Processing
+        if (newName.toUpperCase().equals("Q")) {
             return;
         }
+        else {
+            controller.updateUser(user.getRole(), user.getUserID(), user.getPassword(), newName);
+        }
 
-        controller.updateUser(user.getRole(), user.getUserID(), user.getPassword(), newName);
-
-        clearScreen();
-        hardline();
+        // Completion Menu
+        header();
         System.out.println("Username changed to " + newName + " successfully");
         hardline();
         System.out.print("(Press ENTER to continue)");
         input.nextLine();
     }
 
-    private static void changePassword(IUser user) {
-        String newPassword = null;
+    // Change Password Menu
+    private void changePassword(IUser user) {
+        String newPassword ;
 
-        clearScreen();
-        hardline();
+        // User Interface
+        header();
         System.out.println("Changing Password for " + user.getName());
         hardline();
         System.out.println("Please enter a new password");
         System.out.println("[enter \"q\" to go back]");
         softline();
-        System.out.print("New Password: ");
-        newPassword = input.nextLine();
 
-        if (newPassword.equals("q")) {
+        // User Input
+        System.out.print("New Password: ");
+        newPassword = userInputFormating(false);
+
+        // User Input Formatting
+        if (newPassword.toUpperCase().equals("Q")) {
             return;
+        } else {
+            controller.updateUser(user.getRole(), user.getUserID(), newPassword, user.getName());
         }
 
-        controller.updateUser(user.getRole(), user.getUserID(), newPassword, user.getName());
-
-        clearScreen();
-        hardline();
+        // Completion Menu
+        header();
         System.out.println("Password changed successfully");
         hardline();
         System.out.print("(Press ENTER to continue)");
         input.nextLine();
     }
 
-    private static void deleteProfile(IUser user) {
+    // Delete Profile Menu
+    private void deleteProfile(IUser user) {
         boolean invalid = false;
 
         while (true) {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Deleting " + user.getName() + "\'s Profile");
             hardline();
             System.out.println("Enter the profile user ID to confirm deletion");
@@ -459,33 +478,39 @@ public class ConsoleUI {
                 System.out.println();
             }
 
+            // User Input
             System.out.print("Confirm Delete (User ID): ");
-            String userID = input.nextLine();
+            String userID = userInputFormating(false);
 
-            if (userID.equals("q")) {
+            // User Input Processing
+            if (userID.toUpperCase().equals("Q")) {
                 return;
-            } else if (userID.equals(user.getUserID())) {
+            } 
+            else if (userID.equals(user.getUserID())) {
                 controller.deleteUser(user.getRole(), user.getUserID());
-                clearScreen();
-                hardline();
+                
+                // Completion Menu
+                header();
                 System.out.println("Profile Deleted Successfully");
                 hardline();
                 System.out.print("(Press ENTER to continue)");
                 input.nextLine();
                 return;
+            } 
+            else {
+                invalid = true;
             }
-
-            invalid = true;
         }
     }
 
-    private static void submitEvaluation() {
+    // Submit Evaluation Menu
+    private void submitEvaluation() {
         boolean invalid = false;
         List<EvaluationActivity> activities = controller.getActivityFilterByParticipant(currentUser.getUserID());
 
         do {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Submitting Peer Feedback");
             hardline();
             System.out.println("Please select the peer feedback evaluation activity");
@@ -502,30 +527,36 @@ public class ConsoleUI {
             } else {
                 System.out.println();
             }
-            System.out.print("Activity ID: ");
-            String activityID = input.nextLine();
 
-            if (activityID.equals("q")) {
+            // User Input
+            System.out.print("Activity ID: ");
+            String activityID = userInputFormating(true);
+
+            // User Input Formatting
+            if (activityID.toUpperCase().equals("Q")) {
                 return;
             }
-
-            for (EvaluationActivity a : activities) {
-                if (a.getActivityID().equals(activityID)) {
-                    createFeedback(a);
-                    invalid = false;
-                    break;
-                }
+            else {
                 invalid = true;
+                for (EvaluationActivity a : activities) {
+                    if (a.getActivityID().equals(activityID)) {
+                        createFeedback(a);
+                        invalid = false;
+                        break;
+                    }
+                }
             }
         } while (true);
     }
 
-    private static void createFeedback(EvaluationActivity activity) {
+    // Create Feedback Menu
+    private void createFeedback(EvaluationActivity activity) {
         boolean invalid = false;
         List<IUser> peers = controller.getParticipantExlude(activity.getActivityID(), currentUser.getUserID());
         List<Feedback> feedbacks = activity.getFeedbackList();
 
         do {
+            // User Interface
             for (int i = 0; i < peers.size(); i++) {
                 for (Feedback f : feedbacks) {
                     if (f.getCreator().equals(currentUser) && f.getReceiver().equals(peers.get(i))) {
@@ -534,39 +565,37 @@ public class ConsoleUI {
                 }
             }
 
-            clearScreen();
-
+            header();
             if (peers.isEmpty()) {
-                hardline();
                 System.out.println("You have no more peers to give feedbacks");
                 hardline();
                 System.out.print("(Press ENTER to continue)");
                 input.nextLine();
                 return;
             }
-
-            hardline();
-            System.out.println("Submitting Peer Feedback");
-            hardline();
-            System.out.println("Please select the student to give feedback");
-            System.out.println("[enter \"q\" to go back]");
-            softline();
-            System.out.printf("%-5s %s\n", "ID", "Student Name");
-            softline();
-            for (IUser p : peers) {
-                System.out.printf("%-5s %s\n", p.getUserID(), p.getName());
-            }
-            softline();
-            if (invalid) {
-                System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING STUDENT");
-            } else {
-                System.out.println();
+            else {
+                System.out.println("Submitting Peer Feedback");
+                hardline();
+                System.out.println("Please select the student to give feedback");
+                System.out.println("[enter \"q\" to go back]");
+                softline();
+                System.out.printf("%-5s %s\n", "ID", "Student Name");
+                softline();
+                for (IUser p : peers) {
+                    System.out.printf("%-5s %s\n", p.getUserID(), p.getName());
+                }
+                softline();
+                if (invalid) {
+                    System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING STUDENT");
+                } else {
+                    System.out.println();
+                }
             }
 
             System.out.print("Student ID: ");
             String studentID = input.nextLine();
 
-            if (studentID.equals("q")) {
+            if (studentID.toUpperCase().equals("Q")) {
                 return;
             }
 
@@ -576,11 +605,12 @@ public class ConsoleUI {
                     System.out.println("Enter your feedback below");
                     softline();
                     while (true) {
-                        String feedbackContent = input.nextLine();
+                        String feedbackContent = userInputFormating(false);
 
                         if (feedbackContent.equals("q")) {
                             break;
-                        } else if (!feedbackContent.equals("")) {
+                        } 
+                        else if (!feedbackContent.equals("")) {
                             controller.addFeedback(activity.getActivityID(),
                                     activity.getActivityID() + "-" + (activity.getFeedbackList().size() + 1),
                                     currentUser.getUserID(), studentID, LocalDate.now().toString(),
@@ -597,21 +627,24 @@ public class ConsoleUI {
         } while (true);
     }
 
-    private static void viewEvaluation() {
+    // View Feedback Menu
+    private void viewEvaluation() {
         boolean invalid = false;
-        List<EvaluationActivity> activities = null;
+        List<EvaluationActivity> activities;
 
         if (currentUser instanceof Student) {
             activities = controller.getActivityFilterByParticipant(currentUser.getUserID());
-        } else if (currentUser instanceof Lecturer) {
+        } 
+        else if (currentUser instanceof Lecturer) {
             activities = controller.getActivityFilterByCreator(currentUser.getUserID());
-        } else {
+        } 
+        else {
             activities = controller.getActivityList();
         }
 
         do {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("View Peer Feedback Evaluation");
             hardline();
             System.out.println("Which activity feedback would you like to view");
@@ -625,16 +658,22 @@ public class ConsoleUI {
             softline();
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING EVALUATION ACTIVITY");
-            } else {
+                invalid = false;
+            } 
+            else {
                 System.out.println();
             }
-            System.out.print("Activity ID: ");
-            String activityID = input.nextLine();
 
-            if (activityID.equals("q")) {
+            // User Input
+            System.out.print("Activity ID: ");
+            String activityID = userInputFormating(true);
+
+            // User Input Selection
+            if (activityID.toUpperCase().equals("Q")) {
                 return;
             }
 
+            // 
             for (EvaluationActivity a : activities) {
                 if (a.getActivityID().equals(activityID)) {
                     if (!(currentUser instanceof Student)) {
@@ -648,8 +687,8 @@ public class ConsoleUI {
                     invalid = false;
 
                     do {
-                        clearScreen();
-                        hardline();
+                        // User Interface
+                        header();
                         System.out.println("View Peer Feedback Evaluation");
                         hardline();
                         System.out.println("Which feedback would you like to view");
@@ -675,10 +714,12 @@ public class ConsoleUI {
                             System.out.println();
                         }
 
+                        // User Input
                         System.out.print("Feedback ID: ");
                         String feedbackID = input.nextLine();
 
-                        if (feedbackID.equals("q")) {
+                        // User Input Processing
+                        if (feedbackID.toUpperCase().equals("Q")) {
                             break;
                         }
 
@@ -700,20 +741,23 @@ public class ConsoleUI {
         } while (true);
     }
 
-    private static void createEvaluationActivity() {
+    // Create Evaluation Activity Menu
+    private void createEvaluationActivity() {
         boolean invalid = false;
 
-        clearScreen();
-        hardline();
+        // User Interface
+        header();
         System.out.println("Creating New Peer Feedback Evaluation Activity");
         hardline();
         System.out.println("Please enter the activity information");
         softline();
 
+        // User Input
         System.out.print("Activity Name: ");
-        String activityName = input.nextLine();
+        String activityName = userInputFormating(false);
         System.out.println();
 
+        // User Input Processing
         List<EvaluationActivity> activities = controller.getActivityList();
         int numID = 1;
         if (!activities.isEmpty()) {
@@ -732,8 +776,8 @@ public class ConsoleUI {
         List<String> participants = new ArrayList<>();
 
         while (true) {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Adding Participants to Activity");
             hardline();
             System.out.println("enter \"q\" to stop adding participants");
@@ -746,13 +790,12 @@ public class ConsoleUI {
             System.out.print("Student ID: ");
             String userID = input.nextLine();
 
-            if (participants.contains(userID)) {
-                invalid = true;
+            // User Input Processing
+            if (userID.toUpperCase().equals("Q")) {
                 break;
             }
-
-            if (userID.equals("q")) {
-                break;
+            else if (participants.contains(userID)) {
+                invalid = true;
             }
 
             for (IUser u : users) {
@@ -761,18 +804,20 @@ public class ConsoleUI {
                     currentActivity.addParticipant(u);
                     participants.add(userID);
                     break;
-                } else {
+                } 
+                else {
                     invalid = true;
                 }
             }
         }
     }
 
-    private static void generateFeebackReport(EvaluationActivity activity) {
+    // Generate Report Menu
+    private void generateFeebackReport(EvaluationActivity activity) {
         List<Feedback> feedbacks = activity.getFeedbackList();
 
-        clearScreen();
-        hardline();
+        // User Interface
+        header();
         System.out.println("Feedback Report (" + activity.getName() + ")");
         hardline();
         System.out.printf("%-9s %-15s %-15s %-15s %-15s %s\n", "ID", "Creator", "Receiver",
@@ -782,7 +827,8 @@ public class ConsoleUI {
 
         if (feedbacks.isEmpty()) {
             System.out.println("Nothing to see here...");
-        } else {
+        } 
+        else {
             for (Feedback f : feedbacks) {
                 System.out.printf("%-9s %-15s %-15s %-15s %-15s %s\n", f.getFeedbackID(),
                         f.getCreator().getName(),
@@ -796,10 +842,10 @@ public class ConsoleUI {
 
         System.out.print("(Press ENTER to continue)");
         input.nextLine();
-
     }
 
-    private static void createAccount() {
+    // Create Account Menu
+    private void createAccount() {
         List<String> roles = new ArrayList<>();
         roles.add("student");
         roles.add("lecturer");
@@ -811,8 +857,8 @@ public class ConsoleUI {
         boolean invalid = false;
 
         while (true) {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("Creating New Account");
             hardline();
             System.out.println("Please enter the information of the new profile");
@@ -823,10 +869,13 @@ public class ConsoleUI {
                 System.out.println();
             }
 
+            // User Roles
             System.out.print("User Role (student, lecturer, administrator): ");
             role = input.nextLine().toLowerCase();
 
             if (roles.contains(role)) {
+
+                // User Details
                 System.out.print("Name: ");
                 name = input.nextLine();
                 System.out.print("Password:");
@@ -841,40 +890,34 @@ public class ConsoleUI {
                 }
 
                 switch (role) {
-                    case "student":
-                        userID = "s" + numID;
-                        break;
-
-                    case "lecturer":
-                        userID = "l" + numID;
-                        break;
-
-                    case "administrator":
-                        userID = "a" + numID;
-                        break;
+                    case "student" -> userID = "s" + numID;
+                    case "lecturer" -> userID = "l" + numID;
+                    case "administrator" -> userID = "a" + numID;
                 }
 
                 controller.addUser(role, userID, password, name);
 
-                clearScreen();
-                hardline();
+                // Completion Menu
+                header();
                 System.out.println("Account created for " + name);
                 hardline();
                 System.out.println("(Press ENTER to continue)");
                 input.nextLine();
                 return;
-            } else {
+            } 
+            else {
                 invalid = true;
             }
         }
     }
 
-    private static void updateFeedback(EvaluationActivity activity, Feedback feedback) {
+    // Update Feedback Menu
+    private void updateFeedback(EvaluationActivity activity, Feedback feedback) {
         boolean invalid = false;
 
         do {
-            clearScreen();
-            hardline();
+            // User Interface
+            header();
             System.out.println("View Peer Feedback Evaluation");
             hardline();
             System.out.println("[enter \"e\" to edit feedback content]");
@@ -886,42 +929,52 @@ public class ConsoleUI {
 
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING FEEDBACK");
-            } else {
+                invalid = false;
+            } 
+            else {
                 System.out.println();
             }
 
+            // User Input
             System.out.print("Choice (e/q): ");
-            String feedbackID = input.nextLine();
+            String feedbackID = userInputFormating(true);
 
-            if (feedbackID.equals("q")) {
-                return;
-            } else if (feedbackID.equals("e")) {
-                invalid = false;
-                System.out.println();
-                System.out.println("Enter your updated feedback below");
-                softline();
-                while (true) {
-                    String feedbackContent = input.nextLine();
-
-                    if (feedbackContent.equals("q")) {
-                        break;
-                    } else if (!feedbackContent.equals("")) {
-                        controller.updateFeedback(activity.getActivityID(),
-                                feedback.getFeedbackID(),
-                                currentUser.getUserID(), feedback.getReceiver().getUserID(), feedback.getDateCreated(),
-                                LocalDate.now().toString(),
-                                feedbackContent);
-                        invalid = false;
-                        break;
+            // User Input Processing
+            switch (feedbackID) {
+                case "Q" -> {
+                    return;
+                }
+                case "E" -> {
+                    System.out.println();
+                    System.out.println("Enter your updated feedback below");
+                    softline();
+                    while (true) {
+                        String feedbackContent = userInputFormating(false);
+                        
+                        if (feedbackContent.toUpperCase().equals("Q")) {
+                            break;
+                        } 
+                        else if (!feedbackContent.equals("")) {
+                            controller.updateFeedback(activity.getActivityID(),
+                                    feedback.getFeedbackID(),
+                                    currentUser.getUserID(), feedback.getReceiver().getUserID(), feedback.getDateCreated(),
+                                    LocalDate.now().toString(),
+                                    feedbackContent);
+                            invalid = false;
+                            break;
+                        }
+                        else {
+                            invalid = true;
+                        }
                     }
                 }
-            } else {
-                invalid = true;
+                default -> invalid = true;
             }
         } while (true);
     }
 
-    // console manipulation and decoration methods
+    // Console Manipulation and Decoration Methods
+    // Clear Console Screen
     private static void clearScreen() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
@@ -931,13 +984,36 @@ public class ConsoleUI {
         }
     }
 
-    private static void softline() {
+    // Line Types
+    private void softline() {
         System.out.println(
                 "--------------------------------------------------------------------------------------------------------------------------------");
     }
 
-    private static void hardline() {
+    private void hardline() {
         System.out.println(
                 "================================================================================================================================");
+    }
+
+    // Header
+    private void header() {
+        clearScreen();
+        hardline();
+        System.out.println("Peer Feedback Evaluation System");
+        hardline();   
+    }
+
+    // User Input Formatting
+    private String userInputFormating(boolean selection) {
+        String userInput = input.nextLine();
+
+        // Remove All White Space from Input
+        if (selection) {
+            userInput = userInput.replaceAll("\\s+","").toUpperCase();
+        }
+        else {
+            userInput = userInput.replaceAll(";", "");
+        }
+        return userInput;
     }
 }
