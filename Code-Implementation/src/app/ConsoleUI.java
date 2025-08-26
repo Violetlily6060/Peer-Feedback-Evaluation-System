@@ -1,12 +1,11 @@
 package app;
 
 import domain.*;
-
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ConsoleUI {
     private static Controller controller = new Controller();
@@ -482,7 +481,7 @@ public class ConsoleUI {
 
     private static void submitEvaluation() {
         boolean invalid = false;
-        List<EvaluationActivity> activities = controller.getActivityFilteredByCreator(currentUser.getUserID());
+        List<EvaluationActivity> activities = controller.getActivityFilterByParticipant(currentUser.getUserID());
 
         do {
             clearScreen();

@@ -86,7 +86,7 @@ public final class EvaluationActivity {
     }
 
     // Exclude Participants from List
-    public List<IUser> participantExlude(String participantID) {
+    public List<IUser> getParticipantExlude(String participantID) {
         List<IUser> excludedList = new ArrayList<>();
 
         // Search for participant
@@ -118,7 +118,7 @@ public final class EvaluationActivity {
     }
 
     // Filter Feedback by Creator ID
-    public List<Feedback> feedbackFilterByCreator(String creatorID) {
+    public List<Feedback> getFeedbackFilterByCreator(String creatorID) {
         List<Feedback> filteredList = new ArrayList<>();
 
         // Search for Creator
@@ -131,7 +131,7 @@ public final class EvaluationActivity {
     }
 
     // Filter Feedback by Receiver ID
-    public List<Feedback> feedbackFilterByReceiver(String receiverID) {
+    public List<Feedback> getFeedbackFilterByReceiver(String receiverID) {
         List<Feedback> filteredList = new ArrayList<>();
 
         // Search for Receiver

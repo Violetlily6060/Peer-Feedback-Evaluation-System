@@ -7,6 +7,7 @@ public interface IDataStore {
     public List<IUser> getUserList(String userRole);
     public List<EvaluationActivity> getActivityList();
     public List<EvaluationActivity> getActivityFilterByCreator(String creatorID);
+    public List<EvaluationActivity> getActivityFilterByParticipant(String participantID);
     public List<IUser> getParticipantExclude(String activitytID, String participantID);
     public List<Feedback> getFeedbackFilterByCreator(String activityID, String creatorID);
     public List<Feedback> getFeedbackFilterByReceiver(String activityID, String receiverID);

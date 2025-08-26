@@ -17,40 +17,27 @@ public class Controller {
     }
 
     // Get List of Evaluation Activity Filtered by Creator ID
-    public List<EvaluationActivity> getActivityFilteredByCreator(String creatorID) {
-        return dataLists.activityFilterByCreator(creatorID);
+    public List<EvaluationActivity> getActivityFilterByCreator(String creatorID) {
+        return dataLists.getActivityFilterByCreator(creatorID);
+    }
+
+    // Get List of Evaluation Activity Filtered by Participant ID
+    public List<EvaluationActivity> getActivityFilterByParticipant(String participantID) {
+        return dataLists.getActivityFilterByParticipant(participantID);
     }
 
     // Get List of Participant Exclude Participant ID
     public List<IUser> getParticipantExlude(String activityID, String participantID) {
-        return dataLists.participantExclude(activityID, participantID);
-    }
-
-    // Get List of Feedback Filtered by Creator ID
-    public List<Feedback> getFeedbackFilterByCreator(String activityID, String creatorID) {
-        return dataLists.feedbackFilterByCreator(activityID, creatorID);
-    }
-
-    // Get List of Feedback Filtered by Receiver ID
-    public List<Feedback> getFeedbackFilteredByReceiver(String activityID, String receiverID) {
-        return dataLists.feedbackFilterByReceiver(activityID, receiverID);
-      
-    public List<EvaluationActivity> activityFilteredByCreator(String creatorID) {
-        return dataLists.getActivityFilterByCreator(creatorID);
-    }
-
-    // Get List of Participant Exclude Participant ID
-    public List<IUser> participantExlude(String activityID, String participantID) {
         return dataLists.getParticipantExclude(activityID, participantID);
     }
 
     // Get List of Feedback Filtered by Creator ID
-    public List<Feedback> feedbackFilterByCreator(String activityID, String creatorID) {
+    public List<Feedback> getFeedbackFilterByCreator(String activityID, String creatorID) {
         return dataLists.getFeedbackFilterByCreator(activityID, creatorID);
     }
 
     // Get List of Feedback Filtered by Receiver ID
-    public List<Feedback> feedbackFilteredByReceiver(String activityID, String receiverID) {
+    public List<Feedback> getFeedbackFilterByReceiver(String activityID, String receiverID) {
         return dataLists.getFeedbackFilterByReceiver(activityID, receiverID);
     }
 

@@ -60,9 +60,30 @@ public class DataLists implements IDataStore {
     @Override
     public List<EvaluationActivity> getActivityFilterByCreator(String creatorID) {
         List<EvaluationActivity> filteredList = new ArrayList<>();
+
+        // Search for Creator
         for (EvaluationActivity activity : activityList) {
             if (activity.getCreator().getUserID().equals(creatorID)) {
                 filteredList.add(activity);
+            }
+        }
+        return filteredList;
+    }
+
+    // Filter Evaluation Activity List by Participant ID
+    @Override
+    public List<EvaluationActivity> getActivityFilterByParticipant(String participantID) {
+        List<EvaluationActivity> filteredList = new ArrayList<>();
+
+        // Search for Participant
+        for (EvaluationActivity activity : activityList) {
+            List<IUser> participantList = activity.getParticipantList();
+
+            // Iterate Through Participants
+            for (IUser partcipant : participantList) {
+                if (partcipant.getUserID().equals(participantID)) {
+                    filteredList.add(activity);
+                }
             }
         }
         return filteredList;
@@ -75,7 +96,7 @@ public class DataLists implements IDataStore {
          // Search Evaluation Activity
         for (EvaluationActivity activity : activityList) {
             if (activity.getActivityID().equals(activityID)) {
-                return activity.participantExlude(participantID);
+                return activity.getParticipantExlude(participantID);
             }
         }
         return null;
@@ -88,7 +109,7 @@ public class DataLists implements IDataStore {
         // Search for Evaluation Activity
         for (EvaluationActivity activity : activityList) {
             if (activity.getActivityID().equals(activityID)) {
-                return activity.feedbackFilterByCreator(creatorID);
+                return activity.getFeedbackFilterByCreator(creatorID);
             }
         }
         return null;
@@ -101,7 +122,7 @@ public class DataLists implements IDataStore {
         // Seach for Evaluation Activity
         for (EvaluationActivity activity : activityList) {
             if (activity.getActivityID().equals(activityID)) {
-                return activity.feedbackFilterByReceiver(receiverID);
+                return activity.getFeedbackFilterByReceiver(receiverID);
             }
         }
         return null;
