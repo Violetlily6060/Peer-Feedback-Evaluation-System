@@ -54,9 +54,9 @@ public final class EvaluationActivity {
         Path directory;
         if (absPath.getFileName().toString().equals("Code-Implementation")) {
             directory = absPath.resolve(Paths.get("Database", "Evaluation Activity", activityID));
-        }
-        else {
-            directory = absPath.resolve(Paths.get("Code-Implementation", "Database", "Evaluation Activity", activityID));
+        } else {
+            directory = absPath
+                    .resolve(Paths.get("Code-Implementation", "Database", "Evaluation Activity", activityID));
         }
         return directory;
     }
@@ -97,7 +97,7 @@ public final class EvaluationActivity {
 
                 // Get Full Participant Details
                 String participantID;
-                while((participantID = participantReader.readLine()) != null) {
+                while ((participantID = participantReader.readLine()) != null) {
                     for (IUser student : studentList) {
                         if (student.getUserID().equals(participantID)) {
                             participants.add(student);
@@ -105,8 +105,7 @@ public final class EvaluationActivity {
                         }
                     }
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("Error Reading from File: " + e.getMessage());
             }
         }
@@ -116,8 +115,7 @@ public final class EvaluationActivity {
             try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(participantPath.normalize().toString()).createNewFile();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("Error Creating New File: " + e.getMessage());
             }
         }
@@ -135,15 +133,15 @@ public final class EvaluationActivity {
             new File(directory.normalize().toString()).mkdirs();
         }
 
-        // Write Data        
-        try (BufferedWriter participantWriter = Files.newBufferedWriter(participantPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
+        // Write Data
+        try (BufferedWriter participantWriter = Files.newBufferedWriter(participantPath, StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
             // Write User into File
             for (IUser participant : participantList) {
                 participantWriter.write(participant.getUserID());
                 participantWriter.newLine();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error Reading from File: " + e.getMessage());
         }
     }
@@ -160,7 +158,7 @@ public final class EvaluationActivity {
             try (BufferedReader feedbackReader = Files.newBufferedReader(feedbackPath)) {
 
                 String feedbackLine;
-                while((feedbackLine = feedbackReader.readLine()) != null) {
+                while ((feedbackLine = feedbackReader.readLine()) != null) {
                     String[] feedbackDetails = feedbackLine.split(";");
 
                     // Get Full Creator and Receiver Details
@@ -169,18 +167,17 @@ public final class EvaluationActivity {
                     for (IUser participant : participantList) {
                         if (participant.getUserID().equals(feedbackDetails[1])) {
                             fCreator = participant;
-                        }
-                        else if (participant.getUserID().equals(feedbackDetails[2])) {
+                        } else if (participant.getUserID().equals(feedbackDetails[2])) {
                             fReceiver = participant;
                         }
                         if (fCreator != null && fReceiver != null) {
-                            feedbacks.add(new Feedback(feedbackDetails[0], fCreator, fReceiver, feedbackDetails[3], feedbackDetails[4], feedbackDetails[5]));
+                            feedbacks.add(new Feedback(feedbackDetails[0], fCreator, fReceiver, feedbackDetails[3],
+                                    feedbackDetails[4], feedbackDetails[5]));
                             break;
                         }
-                    }  
+                    }
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("Error Reading from File: " + e.getMessage());
             }
         }
@@ -190,8 +187,7 @@ public final class EvaluationActivity {
             try {
                 new File(directory.normalize().toString()).mkdirs();
                 new File(feedbackPath.normalize().toString()).createNewFile();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("Error Creating New File: " + e.getMessage());
             }
         }
@@ -209,14 +205,14 @@ public final class EvaluationActivity {
             new File(directory.normalize().toString()).mkdirs();
         }
 
-        try (BufferedWriter feedbackWriter = Files.newBufferedWriter(feedbackPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
+        try (BufferedWriter feedbackWriter = Files.newBufferedWriter(feedbackPath, StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
             // Write User into File
             for (Feedback feedback : feedbackList) {
                 feedbackWriter.write(feedback.toString());
                 feedbackWriter.newLine();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error Writing to File: " + e.getMessage());
         }
     }
@@ -224,6 +220,6 @@ public final class EvaluationActivity {
     // To String Methods
     @Override
     public String toString() {
-        return activityID + ";" + name +  ";" + creator.getUserID();
+        return activityID + ";" + name + ";" + creator.getUserID();
     }
 }
