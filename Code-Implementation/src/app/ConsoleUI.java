@@ -3,6 +3,7 @@ package app;
 import domain.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
@@ -363,7 +364,7 @@ public class ConsoleUI {
             hardline();
             System.out.println("Enter the profile user ID");
             softline();
-            System.out.println("Enter \"q\" to go back");
+            System.out.println("[Enter \"q\" to go back]");
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING USER ID");
             } else {
@@ -396,9 +397,14 @@ public class ConsoleUI {
         System.out.println("Changing Username for " + user.getName());
         hardline();
         System.out.println("Please enter a new name");
+        System.out.println("[enter \"q\" to go back]");
         softline();
         System.out.print("New Name: ");
         newName = input.nextLine();
+
+        if (newName.equals("q")) {
+            return;
+        }
 
         controller.updateUser(user.getRole(), user.getUserID(), user.getPassword(), newName);
 
@@ -418,9 +424,14 @@ public class ConsoleUI {
         System.out.println("Changing Password for " + user.getName());
         hardline();
         System.out.println("Please enter a new password");
+        System.out.println("[enter \"q\" to go back]");
         softline();
         System.out.print("New Password: ");
         newPassword = input.nextLine();
+
+        if (newPassword.equals("q")) {
+            return;
+        }
 
         controller.updateUser(user.getRole(), user.getUserID(), newPassword, user.getName());
 
@@ -442,7 +453,7 @@ public class ConsoleUI {
             hardline();
             System.out.println("Enter the profile user ID to confirm deletion");
             softline();
-            System.out.println("Enter \"q\" to go back");
+            System.out.println("[enter \"q\" to go back]");
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER THE CORRECT USER ID");
             } else {
@@ -470,7 +481,107 @@ public class ConsoleUI {
     }
 
     private static void submitEvaluation() {
+        boolean invalid = false;
+        List<EvaluationActivity> activities = controller.getActivityFilteredByCreator(currentUser.getUserID());
 
+        do {
+            clearScreen();
+            for (EvaluationActivity a : activities) {
+                System.out.println(a.getParticipantList());
+            }
+            hardline();
+            System.out.println("Submitting Peer Feedback");
+            hardline();
+            System.out.println("Please select the peer feedback evaluation activity");
+            System.out.println("[enter \"q\" to go back]");
+            softline();
+            for (EvaluationActivity a : activities) {
+                System.out.printf("%-7s %s\n", a.getActivityID(), a.getName());
+            }
+            if (invalid) {
+                System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING EVALUATION ACTIVITY");
+            } else {
+                System.out.println();
+            }
+            System.out.print("Activity ID: ");
+            String activityID = input.nextLine();
+
+            if (activityID.equals("q")) {
+                return;
+            }
+
+            for (EvaluationActivity a : activities) {
+                if (a.getActivityID().equals(activityID)) {
+                    createFeedback(a);
+                    invalid = false;
+                    break;
+                }
+                invalid = true;
+            }
+        } while (true);
+    }
+
+    private static void createFeedback(EvaluationActivity activity) {
+        boolean invalid = false;
+        List<IUser> peers = controller.getParticipantExlude(activity.getActivityID(), currentUser.getUserID());
+
+        if (peers.isEmpty()) {
+            clearScreen();
+            hardline();
+            System.out.println("You have no more peers to give feedbacks");
+            hardline();
+            System.out.print("(Press ENTER to continue)");
+            input.nextLine();
+            return;
+        }
+
+        do {
+            clearScreen();
+            hardline();
+            System.out.println("Submitting Peer Feedback");
+            hardline();
+            System.out.println("Please select the student to give feedback");
+            System.out.println("[enter \"q\" to go back]");
+            softline();
+            for (IUser p : peers) {
+                System.out.printf("%-5s %s\n", p.getUserID(), p.getName());
+            }
+            if (invalid) {
+                System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING STUDENT");
+            } else {
+                System.out.println();
+            }
+
+            System.out.print("Student ID: ");
+            String studentID = input.nextLine();
+
+            if (studentID.equals("q")) {
+                return;
+            }
+
+            for (IUser p : peers) {
+                if (p.getUserID().equals(studentID)) {
+                    System.out.println();
+                    System.out.println("Enter your feedback below");
+                    softline();
+                    while (true) {
+                        String feedbackContent = input.nextLine();
+
+                        if (!feedbackContent.equals("")) {
+                            controller.addFeedback(activity.getActivityID(),
+                                    activity.getActivityID() + "-" + (activity.getFeedbackList().size() + 1),
+                                    currentUser.getUserID(), studentID, LocalDate.now().toString(),
+                                    LocalDate.now().toString(),
+                                    feedbackContent);
+                            invalid = false;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                invalid = true;
+            }
+        } while (true);
     }
 
     private static void viewEvaluation() {
@@ -634,10 +745,10 @@ public class ConsoleUI {
     }
 
     private static void softline() {
-        System.out.println("--------------------------------------------------");
+        System.out.println("-----------------------------------------------------------------------");
     }
 
     private static void hardline() {
-        System.out.println("==================================================");
+        System.out.println("=======================================================================");
     }
 }

@@ -17,6 +17,24 @@ public class Controller {
     }
 
     // Get List of Evaluation Activity Filtered by Creator ID
+    public List<EvaluationActivity> getActivityFilteredByCreator(String creatorID) {
+        return dataLists.activityFilterByCreator(creatorID);
+    }
+
+    // Get List of Participant Exclude Participant ID
+    public List<IUser> getParticipantExlude(String activityID, String participantID) {
+        return dataLists.participantExclude(activityID, participantID);
+    }
+
+    // Get List of Feedback Filtered by Creator ID
+    public List<Feedback> getFeedbackFilterByCreator(String activityID, String creatorID) {
+        return dataLists.feedbackFilterByCreator(activityID, creatorID);
+    }
+
+    // Get List of Feedback Filtered by Receiver ID
+    public List<Feedback> getFeedbackFilteredByReceiver(String activityID, String receiverID) {
+        return dataLists.feedbackFilterByReceiver(activityID, receiverID);
+      
     public List<EvaluationActivity> activityFilteredByCreator(String creatorID) {
         return dataLists.getActivityFilterByCreator(creatorID);
     }
@@ -65,12 +83,14 @@ public class Controller {
 
     // Feedback Functions
     // Add New Feedback to List
-    public void addFeedback(String activityID, String feedbackID, String creatorID, String receiverID, String dateCreated, String dateUpdated, String content) {
+    public void addFeedback(String activityID, String feedbackID, String creatorID, String receiverID,
+            String dateCreated, String dateUpdated, String content) {
         dataLists.addFeedback(activityID, feedbackID, creatorID, receiverID, dateCreated, dateUpdated, content);
     }
 
     // Update Existing Feedback Details in List
-    public void updateFeedback(String activityID, String feedbackID, String creatorID, String receiverID, String dateCreated, String dateUpdated, String content) {
+    public void updateFeedback(String activityID, String feedbackID, String creatorID, String receiverID,
+            String dateCreated, String dateUpdated, String content) {
         dataLists.updateFeedback(activityID, feedbackID, creatorID, receiverID, dateCreated, dateUpdated, content);
     }
 }
