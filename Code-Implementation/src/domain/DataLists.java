@@ -56,12 +56,52 @@ public class DataLists implements IDataStore {
         return activityList;
     }
     
-    // Get Feedback List
+    // Filter Evaluation Activity List by Creator ID
     @Override
-    public List<Feedback> getFeedbackList(String activityID) {
+    public List<EvaluationActivity> activityFilterByCreator(String creatorID) {
+        List<EvaluationActivity> filteredList = new ArrayList<>();
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getCreator().getUserID().equals(creatorID)) {
+                filteredList.add(activity);
+            }
+        }
+        return filteredList;
+    }
+
+    // Exclude Participants By User ID in Evaluation Activity
+    @Override
+    public List<IUser> participantExclude(String activityID, String participantID) {
+
+         // Search Evaluation Activity
         for (EvaluationActivity activity : activityList) {
             if (activity.getActivityID().equals(activityID)) {
-                return activity.getFeedbackList();
+                return activity.participantExlude(participantID);
+            }
+        }
+        return null;
+    }
+
+    // Filter Feedback By Creator ID in Evaluation Activity
+    @Override
+    public List<Feedback> feedbackFilterByCreator(String activityID, String creatorID) {
+
+        // Search for Evaluation Activity
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getActivityID().equals(activityID)) {
+                return activity.feedbackFilterByCreator(creatorID);
+            }
+        }
+        return null;
+    }
+
+    // Filter Feedback By Receiver ID in Evaluation Activity
+    @Override
+    public List<Feedback> feedbackFilterByReceiver(String activityID, String receiverID) {
+
+        // Seach for Evaluation Activity
+        for (EvaluationActivity activity : activityList) {
+            if (activity.getActivityID().equals(activityID)) {
+                return activity.feedbackFilterByReceiver(receiverID);
             }
         }
         return null;

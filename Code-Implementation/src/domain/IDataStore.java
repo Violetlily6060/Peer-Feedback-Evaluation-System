@@ -6,7 +6,10 @@ public interface IDataStore {
     // Get Functions
     public List<IUser> getUserList(String userRole);
     public List<EvaluationActivity> getActivityList();
-    public List<Feedback> getFeedbackList(String activityID);
+    public List<EvaluationActivity> activityFilterByCreator(String creatorID);
+    public List<IUser> participantExclude(String activitytID, String participantID);
+    public List<Feedback> feedbackFilterByCreator(String activityID, String creatorID);
+    public List<Feedback> feedbackFilterByReceiver(String activityID, String receiverID);
 
     // User Functions
     public void addUser(String userRole, String userID, String newPassword, String newName);
