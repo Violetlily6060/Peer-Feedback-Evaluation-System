@@ -21,14 +21,11 @@ public class ConsoleUI {
 
             if (currentUser instanceof Student) {
                 console.studentMenu();
-            }
-            else if (currentUser instanceof Lecturer) {
+            } else if (currentUser instanceof Lecturer) {
                 console.lecturerMenu();
-            }
-            else if (currentUser instanceof Administrator) {
+            } else if (currentUser instanceof Administrator) {
                 console.adminMenu();
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -51,8 +48,7 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INCORRECT USERNAME OR PASSWORD, PLEASE TRY AGAIN");
                 invalid = false;
-            } 
-            else {
+            } else {
                 System.out.println();
             }
 
@@ -65,8 +61,7 @@ public class ConsoleUI {
             // User Input Processing
             if (userID.toUpperCase().equals("Q") && password.toUpperCase().equals("Q")) {
                 return null;
-            }
-            else {
+            } else {
                 currentUser = controller.validateLogin(userID, password);
                 if (currentUser == null) {
                     invalid = true;
@@ -94,17 +89,15 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 4");
                 invalid = false;
-            }
-            else {
+            } else {
                 System.out.println();
             }
             System.out.print("Choice (1-4): ");
 
             // User Input
             try {
-                choice = Integer.parseInt(userInputFormating(true));
-            } 
-            catch (NumberFormatException e) {
+                choice = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
                 choice = 0;
             }
 
@@ -115,8 +108,7 @@ public class ConsoleUI {
                     case 2 -> submitEvaluation();
                     case 3 -> viewEvaluation();
                 }
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         } while (choice != 4);
@@ -143,17 +135,15 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 4");
                 invalid = false;
-            }
-            else {
+            } else {
                 System.out.println();
             }
             System.out.print("Choice (1-4): ");
 
             // User Input
             try {
-                choice = Integer.parseInt(userInputFormating(true));
-            } 
-            catch (NumberFormatException e) {
+                choice = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
                 choice = 0;
             }
 
@@ -164,8 +154,7 @@ public class ConsoleUI {
                     case 2 -> createEvaluationActivity();
                     case 3 -> viewEvaluation();
                 }
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         } while (choice != 4);
@@ -192,17 +181,15 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 4");
                 invalid = false;
-            }
-            else {
+            } else {
                 System.out.println();
             }
             System.out.print("Choice (1-4): ");
 
             // User Input
             try {
-                choice = Integer.parseInt(userInputFormating(true));
-            } 
-            catch (NumberFormatException e) {
+                choice = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
                 choice = 0;
             }
 
@@ -213,8 +200,7 @@ public class ConsoleUI {
                     case 2 -> createAccount();
                     case 3 -> viewEvaluation();
                 }
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         } while (choice != 4);
@@ -242,17 +228,15 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE PICK BETWEEN 1 TO 3");
                 invalid = false;
-            } 
-            else {
+            } else {
                 System.out.println();
             }
             System.out.print("Choice (1-3): ");
 
             // User Input
             try {
-                choice = Integer.parseInt(userInputFormating(true));
-            } 
-            catch (NumberFormatException e) {
+                choice = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
                 choice = 0;
             }
 
@@ -262,8 +246,7 @@ public class ConsoleUI {
                     case 1 -> changeUsername(user);
                     case 2 -> changePassword(user);
                 }
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         } while (choice != 3);
@@ -296,9 +279,8 @@ public class ConsoleUI {
 
             // User Input
             try {
-                choice = Integer.parseInt(userInputFormating(true));
-            } 
-            catch (NumberFormatException e) {
+                choice = Integer.parseInt(input.nextLine());
+            } catch (NumberFormatException e) {
                 choice = 0;
             }
 
@@ -309,8 +291,7 @@ public class ConsoleUI {
                     case 2 -> changePassword(user);
                     case 3 -> deleteProfile(user);
                 }
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         } while (choice != 3);
@@ -342,7 +323,7 @@ public class ConsoleUI {
 
             // User Input
             try {
-                choice = Integer.parseInt(userInputFormating(true));
+                choice = Integer.parseInt(input.nextLine());
             } catch (NumberFormatException e) {
                 choice = 0;
             }
@@ -372,8 +353,7 @@ public class ConsoleUI {
             System.out.println("[Enter \"q\" to go back]");
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING USER ID");
-            } 
-            else {
+            } else {
                 System.out.println();
             }
 
@@ -384,8 +364,7 @@ public class ConsoleUI {
             // User input Processing
             if (userID.toUpperCase().equals("Q")) {
                 return;
-            }
-            else {
+            } else {
                 for (IUser u : users) {
                     if (u.getUserID().equals(userID)) {
                         manageProfileByAdmin(u);
@@ -411,13 +390,12 @@ public class ConsoleUI {
 
         // User Input
         System.out.print("New Name: ");
-        newName = userInputFormating(false);
+        newName = userInputFormating();
 
         // User Input Processing
         if (newName.toUpperCase().equals("Q")) {
             return;
-        }
-        else {
+        } else {
             controller.updateUser(user.getRole(), user.getUserID(), user.getPassword(), newName);
         }
 
@@ -431,7 +409,7 @@ public class ConsoleUI {
 
     // Change Password Menu
     private void changePassword(IUser user) {
-        String newPassword ;
+        String newPassword;
 
         // User Interface
         header();
@@ -443,7 +421,7 @@ public class ConsoleUI {
 
         // User Input
         System.out.print("New Password: ");
-        newPassword = userInputFormating(false);
+        newPassword = userInputFormating();
 
         // User Input Formatting
         if (newPassword.toUpperCase().equals("Q")) {
@@ -480,15 +458,14 @@ public class ConsoleUI {
 
             // User Input
             System.out.print("Confirm Delete (User ID): ");
-            String userID = userInputFormating(false);
+            String userID = input.nextLine();
 
             // User Input Processing
             if (userID.toUpperCase().equals("Q")) {
                 return;
-            } 
-            else if (userID.equals(user.getUserID())) {
+            } else if (userID.equals(user.getUserID())) {
                 controller.deleteUser(user.getRole(), user.getUserID());
-                
+
                 // Completion Menu
                 header();
                 System.out.println("Profile Deleted Successfully");
@@ -496,8 +473,7 @@ public class ConsoleUI {
                 System.out.print("(Press ENTER to continue)");
                 input.nextLine();
                 return;
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         }
@@ -530,13 +506,12 @@ public class ConsoleUI {
 
             // User Input
             System.out.print("Activity ID: ");
-            String activityID = userInputFormating(true);
+            String activityID = input.nextLine();
 
             // User Input Formatting
             if (activityID.toUpperCase().equals("Q")) {
                 return;
-            }
-            else {
+            } else {
                 invalid = true;
                 for (EvaluationActivity a : activities) {
                     if (a.getActivityID().equals(activityID)) {
@@ -572,8 +547,7 @@ public class ConsoleUI {
                 System.out.print("(Press ENTER to continue)");
                 input.nextLine();
                 return;
-            }
-            else {
+            } else {
                 System.out.println("Submitting Peer Feedback");
                 hardline();
                 System.out.println("Please select the student to give feedback");
@@ -605,12 +579,11 @@ public class ConsoleUI {
                     System.out.println("Enter your feedback below");
                     softline();
                     while (true) {
-                        String feedbackContent = userInputFormating(false);
+                        String feedbackContent = userInputFormating();
 
                         if (feedbackContent.equals("q")) {
                             break;
-                        } 
-                        else if (!feedbackContent.equals("")) {
+                        } else if (!feedbackContent.equals("")) {
                             controller.addFeedback(activity.getActivityID(),
                                     activity.getActivityID() + "-" + (activity.getFeedbackList().size() + 1),
                                     currentUser.getUserID(), studentID, LocalDate.now().toString(),
@@ -634,11 +607,9 @@ public class ConsoleUI {
 
         if (currentUser instanceof Student) {
             activities = controller.getActivityFilterByParticipant(currentUser.getUserID());
-        } 
-        else if (currentUser instanceof Lecturer) {
+        } else if (currentUser instanceof Lecturer) {
             activities = controller.getActivityFilterByCreator(currentUser.getUserID());
-        } 
-        else {
+        } else {
             activities = controller.getActivityList();
         }
 
@@ -659,21 +630,20 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING EVALUATION ACTIVITY");
                 invalid = false;
-            } 
-            else {
+            } else {
                 System.out.println();
             }
 
             // User Input
             System.out.print("Activity ID: ");
-            String activityID = userInputFormating(true);
+            String activityID = input.nextLine();
 
             // User Input Selection
             if (activityID.toUpperCase().equals("Q")) {
                 return;
             }
 
-            // 
+            //
             for (EvaluationActivity a : activities) {
                 if (a.getActivityID().equals(activityID)) {
                     if (!(currentUser instanceof Student)) {
@@ -754,7 +724,7 @@ public class ConsoleUI {
 
         // User Input
         System.out.print("Activity Name: ");
-        String activityName = userInputFormating(false);
+        String activityName = userInputFormating();
         System.out.println();
 
         // User Input Processing
@@ -793,8 +763,7 @@ public class ConsoleUI {
             // User Input Processing
             if (userID.toUpperCase().equals("Q")) {
                 break;
-            }
-            else if (participants.contains(userID)) {
+            } else if (participants.contains(userID)) {
                 invalid = true;
             }
 
@@ -804,8 +773,7 @@ public class ConsoleUI {
                     currentActivity.addParticipant(u);
                     participants.add(userID);
                     break;
-                } 
-                else {
+                } else {
                     invalid = true;
                 }
             }
@@ -827,8 +795,7 @@ public class ConsoleUI {
 
         if (feedbacks.isEmpty()) {
             System.out.println("Nothing to see here...");
-        } 
-        else {
+        } else {
             for (Feedback f : feedbacks) {
                 System.out.printf("%-9s %-15s %-15s %-15s %-15s %s\n", f.getFeedbackID(),
                         f.getCreator().getName(),
@@ -877,9 +844,9 @@ public class ConsoleUI {
 
                 // User Details
                 System.out.print("Name: ");
-                name = input.nextLine();
+                name = userInputFormating();
                 System.out.print("Password:");
-                password = input.nextLine();
+                password = userInputFormating();
 
                 List<IUser> users = controller.getUserList(role);
                 int numID = 1;
@@ -904,8 +871,7 @@ public class ConsoleUI {
                 System.out.println("(Press ENTER to continue)");
                 input.nextLine();
                 return;
-            } 
-            else {
+            } else {
                 invalid = true;
             }
         }
@@ -930,17 +896,16 @@ public class ConsoleUI {
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING FEEDBACK");
                 invalid = false;
-            } 
-            else {
+            } else {
                 System.out.println();
             }
 
             // User Input
             System.out.print("Choice (e/q): ");
-            String feedbackID = userInputFormating(true);
+            String feedbackID = input.nextLine();
 
             // User Input Processing
-            switch (feedbackID) {
+            switch (feedbackID.toUpperCase()) {
                 case "Q" -> {
                     return;
                 }
@@ -949,21 +914,20 @@ public class ConsoleUI {
                     System.out.println("Enter your updated feedback below");
                     softline();
                     while (true) {
-                        String feedbackContent = userInputFormating(false);
-                        
+                        String feedbackContent = userInputFormating();
+
                         if (feedbackContent.toUpperCase().equals("Q")) {
                             break;
-                        } 
-                        else if (!feedbackContent.equals("")) {
+                        } else if (!feedbackContent.equals("")) {
                             controller.updateFeedback(activity.getActivityID(),
                                     feedback.getFeedbackID(),
-                                    currentUser.getUserID(), feedback.getReceiver().getUserID(), feedback.getDateCreated(),
+                                    currentUser.getUserID(), feedback.getReceiver().getUserID(),
+                                    feedback.getDateCreated(),
                                     LocalDate.now().toString(),
                                     feedbackContent);
                             invalid = false;
                             break;
-                        }
-                        else {
+                        } else {
                             invalid = true;
                         }
                     }
@@ -1000,20 +964,16 @@ public class ConsoleUI {
         clearScreen();
         hardline();
         System.out.println("Peer Feedback Evaluation System");
-        hardline();   
+        hardline();
     }
 
     // User Input Formatting
-    private String userInputFormating(boolean selection) {
+    private String userInputFormating() {
         String userInput = input.nextLine();
 
-        // Remove All White Space from Input
-        if (selection) {
-            userInput = userInput.replaceAll("\\s+","").toUpperCase();
-        }
-        else {
-            userInput = userInput.replaceAll(";", "");
-        }
+        // Remove all ; from Input
+        userInput = userInput.replaceAll(";", "");
+
         return userInput;
     }
 }
