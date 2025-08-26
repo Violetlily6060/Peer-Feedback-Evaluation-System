@@ -156,7 +156,7 @@ public class ConsoleUI {
                         createEvaluationActivity();
                         break;
                     case 3:
-                        generateFeebackReport();
+                        viewEvaluation();
                         break;
                 }
             } else {
@@ -206,7 +206,7 @@ public class ConsoleUI {
                         createAccount();
                         break;
                     case 3:
-                        generateFeebackReport();
+                        viewEvaluation();
                         break;
                 }
             } else {
@@ -485,18 +485,18 @@ public class ConsoleUI {
 
         do {
             clearScreen();
-            for (EvaluationActivity a : activities) {
-                System.out.println(a.getParticipantList());
-            }
             hardline();
             System.out.println("Submitting Peer Feedback");
             hardline();
             System.out.println("Please select the peer feedback evaluation activity");
             System.out.println("[enter \"q\" to go back]");
             softline();
+            System.out.printf("%-7s %s\n", "ID", "Activity Name");
+            softline();
             for (EvaluationActivity a : activities) {
                 System.out.printf("%-7s %s\n", a.getActivityID(), a.getName());
             }
+            softline();
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING EVALUATION ACTIVITY");
             } else {
@@ -523,28 +523,40 @@ public class ConsoleUI {
     private static void createFeedback(EvaluationActivity activity) {
         boolean invalid = false;
         List<IUser> peers = controller.getParticipantExlude(activity.getActivityID(), currentUser.getUserID());
-
-        if (peers.isEmpty()) {
-            clearScreen();
-            hardline();
-            System.out.println("You have no more peers to give feedbacks");
-            hardline();
-            System.out.print("(Press ENTER to continue)");
-            input.nextLine();
-            return;
-        }
+        List<Feedback> feedbacks = activity.getFeedbackList();
 
         do {
+            for (int i = 0; i < peers.size(); i++) {
+                for (Feedback f : feedbacks) {
+                    if (f.getCreator().equals(currentUser) && f.getReceiver().equals(peers.get(i))) {
+                        peers.remove(peers.get(i));
+                    }
+                }
+            }
+
             clearScreen();
+
+            if (peers.isEmpty()) {
+                hardline();
+                System.out.println("You have no more peers to give feedbacks");
+                hardline();
+                System.out.print("(Press ENTER to continue)");
+                input.nextLine();
+                return;
+            }
+
             hardline();
             System.out.println("Submitting Peer Feedback");
             hardline();
             System.out.println("Please select the student to give feedback");
             System.out.println("[enter \"q\" to go back]");
             softline();
+            System.out.printf("%-5s %s\n", "ID", "Student Name");
+            softline();
             for (IUser p : peers) {
                 System.out.printf("%-5s %s\n", p.getUserID(), p.getName());
             }
+            softline();
             if (invalid) {
                 System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING STUDENT");
             } else {
@@ -566,7 +578,9 @@ public class ConsoleUI {
                     while (true) {
                         String feedbackContent = input.nextLine();
 
-                        if (!feedbackContent.equals("")) {
+                        if (feedbackContent.equals("q")) {
+                            break;
+                        } else if (!feedbackContent.equals("")) {
                             controller.addFeedback(activity.getActivityID(),
                                     activity.getActivityID() + "-" + (activity.getFeedbackList().size() + 1),
                                     currentUser.getUserID(), studentID, LocalDate.now().toString(),
@@ -584,7 +598,106 @@ public class ConsoleUI {
     }
 
     private static void viewEvaluation() {
+        boolean invalid = false;
+        List<EvaluationActivity> activities = null;
 
+        if (currentUser instanceof Student) {
+            activities = controller.getActivityFilterByParticipant(currentUser.getUserID());
+        } else if (currentUser instanceof Lecturer) {
+            activities = controller.getActivityFilterByCreator(currentUser.getUserID());
+        } else {
+            activities = controller.getActivityList();
+        }
+
+        do {
+            clearScreen();
+            hardline();
+            System.out.println("View Peer Feedback Evaluation");
+            hardline();
+            System.out.println("Which activity feedback would you like to view");
+            System.out.println("[enter \"q\" to go back]");
+            softline();
+            System.out.printf("%-7s %s\n", "ID", "Activity Name");
+            softline();
+            for (EvaluationActivity a : activities) {
+                System.out.printf("%-7s %s\n", a.getActivityID(), a.getName());
+            }
+            softline();
+            if (invalid) {
+                System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING EVALUATION ACTIVITY");
+            } else {
+                System.out.println();
+            }
+            System.out.print("Activity ID: ");
+            String activityID = input.nextLine();
+
+            if (activityID.equals("q")) {
+                return;
+            }
+
+            for (EvaluationActivity a : activities) {
+                if (a.getActivityID().equals(activityID)) {
+                    if (!(currentUser instanceof Student)) {
+                        invalid = false;
+                        generateFeebackReport(a);
+                        break;
+                    }
+
+                    List<Feedback> feedbacks = controller.getFeedbackFilterByCreator(activityID,
+                            currentUser.getUserID());
+                    invalid = false;
+
+                    do {
+                        clearScreen();
+                        hardline();
+                        System.out.println("View Peer Feedback Evaluation");
+                        hardline();
+                        System.out.println("Which feedback would you like to view");
+                        System.out.println("[enter \"q\" to go back]");
+                        softline();
+
+                        System.out.printf("%-15s %-9s %-15s %-15s %-15s\n", "Activity", "ID", "Peer Name",
+                                "Date Created",
+                                "Date Updated");
+
+                        softline();
+
+                        for (Feedback f : feedbacks) {
+                            System.out.printf("%-15s %-9s %-15s %-15s %-15s\n", a.getName(), f.getFeedbackID(),
+                                    f.getReceiver().getName(),
+                                    f.getDateCreated(),
+                                    f.getDateUpdated());
+                        }
+
+                        if (invalid) {
+                            System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING FEEDBACK");
+                        } else {
+                            System.out.println();
+                        }
+
+                        System.out.print("Feedback ID: ");
+                        String feedbackID = input.nextLine();
+
+                        if (feedbackID.equals("q")) {
+                            break;
+                        }
+
+                        for (Feedback f : feedbacks) {
+                            if (f.getFeedbackID().equals(feedbackID)) {
+                                updateFeedback(a, f);
+                                System.out.println();
+                                invalid = false;
+                                break;
+                            }
+                            invalid = true;
+                        }
+                    } while (true);
+
+                    break;
+                }
+                invalid = true;
+            }
+        } while (true);
     }
 
     private static void createEvaluationActivity() {
@@ -655,7 +768,34 @@ public class ConsoleUI {
         }
     }
 
-    private static void generateFeebackReport() {
+    private static void generateFeebackReport(EvaluationActivity activity) {
+        List<Feedback> feedbacks = activity.getFeedbackList();
+
+        clearScreen();
+        hardline();
+        System.out.println("Feedback Report (" + activity.getName() + ")");
+        hardline();
+        System.out.printf("%-9s %-15s %-15s %-15s %-15s %s\n", "ID", "Creator", "Receiver",
+                "Date Created", "Date Updated", "Feedback");
+
+        softline();
+
+        if (feedbacks.isEmpty()) {
+            System.out.println("Nothing to see here...");
+        } else {
+            for (Feedback f : feedbacks) {
+                System.out.printf("%-9s %-15s %-15s %-15s %-15s %s\n", f.getFeedbackID(),
+                        f.getCreator().getName(),
+                        f.getReceiver().getName(),
+                        f.getDateCreated(),
+                        f.getDateUpdated(),
+                        f.getContent());
+            }
+        }
+        softline();
+
+        System.out.print("(Press ENTER to continue)");
+        input.nextLine();
 
     }
 
@@ -729,8 +869,56 @@ public class ConsoleUI {
         }
     }
 
-    private static void updateFeedback() {
+    private static void updateFeedback(EvaluationActivity activity, Feedback feedback) {
+        boolean invalid = false;
 
+        do {
+            clearScreen();
+            hardline();
+            System.out.println("View Peer Feedback Evaluation");
+            hardline();
+            System.out.println("[enter \"e\" to edit feedback content]");
+            System.out.println("[enter \"q\" to go back]");
+            softline();
+
+            System.out.println(feedback.getContent());
+            softline();
+
+            if (invalid) {
+                System.out.println("INVALID INPUT, PLEASE ENTER AN EXISTING FEEDBACK");
+            } else {
+                System.out.println();
+            }
+
+            System.out.print("Choice (e/q): ");
+            String feedbackID = input.nextLine();
+
+            if (feedbackID.equals("q")) {
+                return;
+            } else if (feedbackID.equals("e")) {
+                invalid = false;
+                System.out.println();
+                System.out.println("Enter your updated feedback below");
+                softline();
+                while (true) {
+                    String feedbackContent = input.nextLine();
+
+                    if (feedbackContent.equals("q")) {
+                        break;
+                    } else if (!feedbackContent.equals("")) {
+                        controller.updateFeedback(activity.getActivityID(),
+                                feedback.getFeedbackID(),
+                                currentUser.getUserID(), feedback.getReceiver().getUserID(), feedback.getDateCreated(),
+                                LocalDate.now().toString(),
+                                feedbackContent);
+                        invalid = false;
+                        break;
+                    }
+                }
+            } else {
+                invalid = true;
+            }
+        } while (true);
     }
 
     // console manipulation and decoration methods
@@ -744,10 +932,12 @@ public class ConsoleUI {
     }
 
     private static void softline() {
-        System.out.println("-----------------------------------------------------------------------");
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------------------------");
     }
 
     private static void hardline() {
-        System.out.println("=======================================================================");
+        System.out.println(
+                "================================================================================================================================");
     }
 }
