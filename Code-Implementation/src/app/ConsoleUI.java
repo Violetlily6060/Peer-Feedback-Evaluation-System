@@ -736,7 +736,7 @@ public class ConsoleUI {
         controller.addActivity("pfe" + numID, activityName, currentUser.getUserID());
         activities = controller.getActivityList();
 
-        EvaluationActivity currentActivity = null;
+        EvaluationActivity currentActivity = null;  
         for (EvaluationActivity ea : activities) {
             if (ea.getActivityID().equals("pfe" + numID)) {
                 currentActivity = ea;
