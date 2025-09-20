@@ -32,7 +32,7 @@ public class ConsoleUI {
     }
 
     // Login Page
-    private IUser login() {
+    public IUser login() {
         // Create New Administrator Account if no Accounts Exists
         if (controller.getUserList("administrator").isEmpty()) {
             controller.addUser("administrator", "a1", "admin", "admin");
@@ -72,7 +72,7 @@ public class ConsoleUI {
     }
 
     // Student Main Menu
-    private void studentMenu() {
+    public void studentMenu() {
         int choice;
         boolean invalid = false;
 
@@ -118,7 +118,7 @@ public class ConsoleUI {
     }
 
     // Lecturer Main Menu
-    private void lecturerMenu() {
+    public void lecturerMenu() {
         int choice;
         boolean invalid = false;
 
@@ -164,7 +164,7 @@ public class ConsoleUI {
     }
 
     // Administrator Menu
-    private void adminMenu() {
+    public void adminMenu() {
         int choice;
         boolean invalid = false;
 
@@ -939,7 +939,7 @@ public class ConsoleUI {
 
     // Console Manipulation and Decoration Methods
     // Clear Console Screen
-    private static void clearScreen() {
+    private void clearScreen() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();

@@ -248,7 +248,8 @@ public class DataLists implements IDataStore {
 
     // Participant Functions
     // Add new Participant to List
-    @Override public void addParticipant(String activityID, String participantID) {
+    @Override 
+    public void addParticipant(String activityID, String participantID) {
 
         // Search Evaluation Activity
         for (EvaluationActivity activity : activityList) {
